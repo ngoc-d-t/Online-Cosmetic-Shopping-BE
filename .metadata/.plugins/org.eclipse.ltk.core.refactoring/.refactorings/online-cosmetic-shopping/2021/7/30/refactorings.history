@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename type &apos;com.ngocdt.tttn.entity.SubcategoryEntity&apos; to &apos;CharacteristicsGroupEntity&apos;&#x0D;&#x0A;- Original project: &apos;online-cosmetic-shopping&apos;&#x0D;&#x0A;- Original element: &apos;com.ngocdt.tttn.entity.SubcategoryEntity&apos;&#x0D;&#x0A;- Renamed element: &apos;com.ngocdt.tttn.entity.CharacteristicsGroupEntity&apos;&#x0D;&#x0A;- Update references to refactored element&#x0D;&#x0A;- Rename similarly named elements&#x0D;&#x0A;- Update textual occurrences in comments and strings" description="Rename type &apos;SubcategoryEntity&apos;" flags="589830" id="org.eclipse.jdt.ui.rename.type" input="/src\/main\/java&lt;com.ngocdt.tttn.entity{SubcategoryEntity.java[SubcategoryEntity" matchStrategy="1" name="CharacteristicsGroupEntity" qualified="false" references="true" similarDeclarations="true" stamp="1627135076005" textual="true" version="1.0"/>
+</session>
