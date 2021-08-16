@@ -67,7 +67,7 @@ public class AuthServiceImpl implements AuthService {
         Account account = RegisterDTO.toAccountEntity(dto);
         account.setCustomer(cus);
         account.setAccountID(0);
-        Role role = roleRepo.findByRoleName(ROLE.USER).orElseThrow(
+        Role role = roleRepo.findByRoleName(ROLE.ROLE_USER).orElseThrow(
                 () -> new ConflictException("ROLE not found!"));
         account.setRole(role);
         account.setPassword(encoder.encode(account.getPassword()));

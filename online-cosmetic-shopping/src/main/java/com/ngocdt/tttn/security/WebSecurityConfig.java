@@ -20,8 +20,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(
-        // securedEnabled = true,
-        // jsr250Enabled = true,
+         securedEnabled = true,
+         jsr250Enabled = true,
         prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private static final String[] AUTH_WHITELIST = {
@@ -69,11 +69,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
 				.antMatchers("/api/auth/**").permitAll()
                 .antMatchers("/api/public/**").permitAll()
-//				.antMatchers("/api/admin/**").access("hasRole('ADMIN')")
+                .antMatchers("/api/admin/**").access("hasRole('ROLE_ADMIN')")
+                .antMatchers("/api/client/**").access("hasRole('ROLE_USER')")
                 .antMatchers(AUTH_WHITELIST).permitAll() // whitelist
-//				.antMatchers("/api/user/**").access("hasRole('USER') or hasRole('ADMIN')")
+				.antMatchers("/api/user/**").access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
 				.anyRequest().authenticated();
 
+//        .anyRequest().permitAll();
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 }

@@ -18,17 +18,17 @@ import java.util.ResourceBundle;
 
 @RequiredArgsConstructor
 @Controller
-@RequestMapping("api/auth")
+@RequestMapping("/api/auth")
 public class AuthController {
 
     private final AuthService authService;
 
-    @PostMapping("signin")
+    @PostMapping("/authenticate")
     public ResponseEntity<String> signin(@Valid @RequestBody  AccountDTO dto){
         return ResponseEntity.ok().body(authService.signIn(dto));
     }
 
-    @PostMapping("register")
+    @PostMapping("/register")
     public ResponseEntity<RegisterDTO> register(@Valid @RequestBody RegisterDTO dto){
         return ResponseEntity.ok().body(authService.register(dto));
     }

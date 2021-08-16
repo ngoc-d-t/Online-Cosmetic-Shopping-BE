@@ -1,9 +1,7 @@
 package com.ngocdt.tttn.service.impl;
 
 import com.ngocdt.tttn.dto.AccountDTO;
-import com.ngocdt.tttn.dto.CustomerDTO;
 import com.ngocdt.tttn.entity.Account;
-import com.ngocdt.tttn.entity.Customer;
 import com.ngocdt.tttn.entity.Employee;
 import com.ngocdt.tttn.entity.Role;
 import com.ngocdt.tttn.enums.ROLE;
@@ -15,15 +13,12 @@ import com.ngocdt.tttn.repository.EmployeeRepository;
 import com.ngocdt.tttn.repository.RoleRepository;
 import com.ngocdt.tttn.service.AccountService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -43,7 +38,7 @@ public class AccountServiceImpl implements AccountService{
                 () -> new BadRequestException("Employee not found."));
         account.setEmployee(employee);
         Role role = new Role();
-        role.setRoleName(ROLE.ADMIN);
+        role.setRoleName(ROLE.ROLE_ADMIN);
         account.setRole(role);
         return AccountDTO.toDTO(accountRepo.save(account));
     }
@@ -56,7 +51,7 @@ public class AccountServiceImpl implements AccountService{
         Employee employee = employeeRepo.findById(dto.getEmployeeID()).orElseThrow(
                 () -> new BadRequestException("Employee not found."));
         account.setEmployee(employee);
-        Role role = roleRepo.findByRoleName(ROLE.ADMIN).orElseThrow(()-> new ConflictException("Role not found."));
+        Role role = roleRepo.findByRoleName(ROLE.ROLE_ADMIN).orElseThrow(()-> new ConflictException("Role not found."));
         account.setRole(role);
         account.setAccountID(0);
         account.setPassword(encoder.encode(account.getPassword()));

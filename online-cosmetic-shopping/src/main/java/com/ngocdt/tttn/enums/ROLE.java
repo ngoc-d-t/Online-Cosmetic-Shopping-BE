@@ -1,5 +1,5 @@
 package com.ngocdt.tttn.enums;
 
 public enum ROLE {
-	USER,ADMIN
+	ROLE_USER, ROLE_ADMIN
 }

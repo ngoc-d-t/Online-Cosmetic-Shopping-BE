@@ -1,5 +1,6 @@
 package com.ngocdt.tttn.entity;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -51,10 +52,10 @@ public class Product {
 	private Set<Character> character = new HashSet<>();
 
 	@OneToMany(fetch=FetchType.LAZY,mappedBy="product")
-	private List<DiscountDetail> discountDetals;
+	private List<DiscountDetail> discountDetals = new ArrayList<>();
 	
 	@OneToMany(fetch=FetchType.LAZY,mappedBy="product")
-	private List<Comment> comments;
+	private List<Comment> comments = new ArrayList<>();
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "employeeID", nullable = false)

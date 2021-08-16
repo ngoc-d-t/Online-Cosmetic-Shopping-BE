@@ -1,9 +1,6 @@
 package com.ngocdt.tttn.dto;
 
-import com.ngocdt.tttn.entity.Category;
-import com.ngocdt.tttn.entity.Employee;
-import com.ngocdt.tttn.entity.Product;
-import com.ngocdt.tttn.entity.ProductPrice;
+import com.ngocdt.tttn.entity.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.NotBlank;
@@ -23,8 +20,9 @@ public class ProductDTO {
     private String direction;
     private String description;
     private Integer categoryID;
-    private List<ProductPriceDTO> productPrices;
+    private float price;
     private int employeeID;
+    private float discountPercent;
 
     public static ProductDTO toDTO(Product pro) {
         if (pro == null) {
@@ -38,20 +36,10 @@ public class ProductDTO {
         dto.setQuantity(pro.getQuantity());
         dto.setDirection(pro.getDirection());
         dto.setDescription(pro.getDescription());
-
         dto.setCategoryID(pro.getCategory().getCategoryID());
 
         dto.setEmployeeID(pro.getEmployee().getEmployeeID());
 
-        if (pro.getProductPrices().size() == 0)
-            return dto;
-        List<ProductPriceDTO> pps = new ArrayList<>();
-        for (ProductPrice pp : pro.getProductPrices()
-        ) {
-            ProductPriceDTO priceDTO = ProductPriceDTO.toDTO(pp);
-            pps.add(priceDTO);
-        }
-        dto.setProductPrices(pps);
         return dto;
     }
 
@@ -76,24 +64,7 @@ public class ProductDTO {
         employee.setEmployeeID(dto.getEmployeeID());
         pro.setEmployee(employee);
 
-        if (dto.getProductPrices().size() == 0)
-            return pro;
-        List<ProductPrice> pps = new ArrayList<>();
-        for (ProductPriceDTO pp : dto.getProductPrices()
-        ) {
-            ProductPrice price = ProductPriceDTO.toEntity(pp);
-            pps.add(price);
-        }
-        pro.setProductPrices(pps);
         return pro;
-    }
-
-    public List<ProductPriceDTO> getProductPrices() {
-        return productPrices;
-    }
-
-    public void setProductPrices(List<ProductPriceDTO> productPrices) {
-        this.productPrices = productPrices;
     }
 
     public int getEmployeeID() {
@@ -166,5 +137,22 @@ public class ProductDTO {
 
     public void setCategoryID(Integer categoryID) {
         this.categoryID = categoryID;
+    }
+
+
+    public float getPrice() {
+        return price;
+    }
+
+    public void setPrice(float price) {
+        this.price = price;
+    }
+
+    public float getDiscountPercent() {
+        return discountPercent;
+    }
+
+    public void setDiscountPercent(float discountPercent) {
+        this.discountPercent = discountPercent;
     }
 }

@@ -61,14 +61,10 @@ public class OrderServiceImpl implements OrderService {
                             detail.getProductID(), new Date(), new Date()).orElse(null);
             float discount = 0;
             float productPrice = productPriceRepo.findTop1ByDateLessThanEqual(new Date()).getPrice();
-            discount = discountDetails.getDiscountPercent();
-            totalDiscount += discountDetails.getDiscountPercent() * productPrice * detail.getQuantity();
-//            for (DiscountDetail dd : discountDetails
-//            ) {
-//                discount = dd.getDiscountPercent();
-//                totalDiscount += dd.getDiscountPercent() * productPrice * detail.getQuantity();
-//                break;
-//            }
+            if(discountDetails!=null){
+                discount = discountDetails.getDiscountPercent();
+                totalDiscount += discountDetails.getDiscountPercent() * productPrice * detail.getQuantity();
+            }
             detail.setPrice(productPrice);
             detail.setDiscount(discount);
             detail.setOrderID(order.getOrderID());

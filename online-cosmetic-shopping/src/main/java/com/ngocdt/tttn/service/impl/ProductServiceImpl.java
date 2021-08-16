@@ -3,16 +3,19 @@ package com.ngocdt.tttn.service.impl;
 import com.ngocdt.tttn.dto.ProductDTO;
 import com.ngocdt.tttn.dto.ProductPriceDTO;
 import com.ngocdt.tttn.entity.Account;
+import com.ngocdt.tttn.entity.DiscountDetail;
 import com.ngocdt.tttn.entity.Product;
 import com.ngocdt.tttn.entity.ProductPrice;
 import com.ngocdt.tttn.exception.BadRequestException;
 import com.ngocdt.tttn.repository.AccountRepository;
+import com.ngocdt.tttn.repository.DiscountDetailRepository;
 import com.ngocdt.tttn.repository.ProductPriceRepository;
 import com.ngocdt.tttn.repository.ProductRepository;
 import com.ngocdt.tttn.service.ProductService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -27,14 +30,37 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepo;
     private final AccountRepository accountRepo;
     private final ProductPriceRepository productPriceRepo;
+    private final DiscountDetailRepository discountDetailRepo;
+
     @Override
     public List<ProductDTO> showAll() {
-        return productRepo.findAll().stream().map(ProductDTO::toDTO).collect(Collectors.toList());
+        List<ProductDTO> productDTOSs = productRepo.findAll().stream().map(ProductDTO::toDTO).collect(Collectors.toList());
+        for (ProductDTO p : productDTOSs
+        ) {
+            DiscountDetail discountDetail = discountDetailRepo
+                    .findTopByProduct_ProductIDAndDiscount_StartTimeLessThanEqualAndDiscount_EndTimeGreaterThanEqual(
+                            p.getProductID(), new Date(), new Date()).orElse(null);
+            if (discountDetail != null) {
+                p.setDiscountPercent(discountDetail.getDiscountPercent());
+            }
+            ProductPrice productPrice = productPriceRepo.findTop1ByDateLessThanEqual(new Date());
+            p.setPrice(productPrice.getPrice());
+        }
+        return productDTOSs;
     }
 
     @Override
     public ProductDTO showOne(Integer id) {
-        return ProductDTO.toDTO(productRepo.findById(id).orElse(null));
+        ProductDTO dto= ProductDTO.toDTO(productRepo.findById(id).orElse(null));
+        DiscountDetail discountDetail = discountDetailRepo
+                .findTopByProduct_ProductIDAndDiscount_StartTimeLessThanEqualAndDiscount_EndTimeGreaterThanEqual(
+                        dto.getProductID(), new Date(), new Date()).orElse(null);
+        if (discountDetail != null) {
+            dto.setDiscountPercent(discountDetail.getDiscountPercent());
+        }
+        ProductPrice productPrice = productPriceRepo.findTop1ByDateLessThanEqual(new Date());
+        dto.setPrice(productPrice.getPrice());
+        return dto;
     }
 
     @Override
@@ -46,22 +72,23 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public ProductDTO create(ProductDTO dto, HttpServletRequest request) {
         Account account = accountRepo.findByEmail(request.getAttribute("email").toString()).get();
         Product pro = ProductDTO.toEntity(dto);
         pro.setEmployee(account.getEmployee());
         pro.setProductID(0);
-        Product resProduct = productRepo.save(pro);
-        List<ProductPriceDTO> priceDTOS = new ArrayList<>();
-        for (ProductPriceDTO ppDTO : dto.getProductPrices()
-        ) {
-            ppDTO.setProductID(resProduct.getProductID());
-            ppDTO.setDate(new Date());
-            priceDTOS.add(createProductPrice(ppDTO));
-        }
-        ProductDTO productDTO = ProductDTO.toDTO(resProduct);
-        productDTO.setProductPrices(priceDTOS);
-        return productDTO;
+        pro = productRepo.save(pro);
+
+        ProductPriceDTO price = new ProductPriceDTO();
+        price.setDate(new Date());
+        price.setPrice(dto.getPrice());
+        price.setProductID(pro.getProductID());
+        price = createProductPrice(price);
+
+        dto = ProductDTO.toDTO(pro);
+        dto.setPrice(price.getPrice());
+        return dto;
     }
 
     @Override
