@@ -2,6 +2,7 @@ package com.ngocdt.tttn.controller;
 
 
 import com.ngocdt.tttn.dto.ProductDTO;
+import com.ngocdt.tttn.exception.BadRequestException;
 import com.ngocdt.tttn.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,11 +23,18 @@ public class ProductController {
 
     @GetMapping("/public/products")
     public ResponseEntity<List<ProductDTO>> showAll(
-            @RequestParam(value = "categoryID", required = false, defaultValue = "0") Integer id) {
-        if (id == 0)
+            @RequestParam(value = "categoryID", required = false, defaultValue = "0") Integer id,
+            @RequestParam(value = "value", required = false, defaultValue = "") String value ) {
+        if (id == 0 && !value.isEmpty())
+            return ResponseEntity.ok().body(productService.showByName(value));
+        else if (id == 0 && value.isEmpty())
             return ResponseEntity.ok().body(productService.showAll());
-        else
+        else if (id > 0 && !value.isEmpty())
+            return ResponseEntity.ok().body(productService.showByCategoryAndName(id, value));
+        else if (id > 0 && value.isEmpty())
             return ResponseEntity.ok().body(productService.showByCategory(id));
+        else
+            throw new BadRequestException("No comment.");
     }
 
     @GetMapping("/public/products/{id}")

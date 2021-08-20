@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,24 +33,35 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDTO> showAll() {
-        List<ProductDTO> productDTOSs = productRepo.findAll().stream().map(ProductDTO::toDTO).collect(Collectors.toList());
-        for (ProductDTO p : productDTOSs
-        ) {
+        List<ProductDTO> productDTOSs = productRepo.findAll().stream().map(e -> {
+            ProductDTO dto = ProductDTO.toDTO(e);
             DiscountDetail discountDetail = discountDetailRepo
                     .findTopByProduct_ProductIDAndDiscount_StartTimeLessThanEqualAndDiscount_EndTimeGreaterThanEqual(
-                            p.getProductID(), new Date(), new Date()).orElse(null);
+                            dto.getProductID(), new Date(), new Date()).orElse(null);
             if (discountDetail != null) {
-                p.setDiscountPercent(discountDetail.getDiscountPercent());
+                dto.setDiscountPercent(discountDetail.getDiscountPercent());
             }
             ProductPrice productPrice = productPriceRepo.findTop1ByDateLessThanEqual(new Date());
-            p.setPrice(productPrice.getPrice());
-        }
+            dto.setPrice(productPrice.getPrice());
+            return dto;
+        }).collect(Collectors.toList());
+//        for (ProductDTO p : productDTOSs
+//        ) {
+//            DiscountDetail discountDetail = discountDetailRepo
+//                    .findTopByProduct_ProductIDAndDiscount_StartTimeLessThanEqualAndDiscount_EndTimeGreaterThanEqual(
+//                            p.getProductID(), new Date(), new Date()).orElse(null);
+//            if (discountDetail != null) {
+//                p.setDiscountPercent(discountDetail.getDiscountPercent());
+//            }
+//            ProductPrice productPrice = productPriceRepo.findTop1ByDateLessThanEqual(new Date());
+//            p.setPrice(productPrice.getPrice());
+//        }
         return productDTOSs;
     }
 
     @Override
     public ProductDTO showOne(Integer id) {
-        ProductDTO dto= ProductDTO.toDTO(productRepo.findById(id).orElse(null));
+        ProductDTO dto = ProductDTO.toDTO(productRepo.findById(id).orElse(null));
         DiscountDetail discountDetail = discountDetailRepo
                 .findTopByProduct_ProductIDAndDiscount_StartTimeLessThanEqualAndDiscount_EndTimeGreaterThanEqual(
                         dto.getProductID(), new Date(), new Date()).orElse(null);
@@ -107,6 +117,51 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDTO> showByCategory(Integer categoryID) {
-        return productRepo.findByCategory_CategoryID(categoryID).stream().map(ProductDTO::toDTO).collect(Collectors.toList());
+        return productRepo.findByCategory_CategoryID(categoryID).stream().map(e -> {
+            ProductDTO dto = ProductDTO.toDTO(e);
+            DiscountDetail discountDetail = discountDetailRepo
+                    .findTopByProduct_ProductIDAndDiscount_StartTimeLessThanEqualAndDiscount_EndTimeGreaterThanEqual(
+                            dto.getProductID(), new Date(), new Date()).orElse(null);
+            if (discountDetail != null) {
+                dto.setDiscountPercent(discountDetail.getDiscountPercent());
+            }
+            ProductPrice productPrice = productPriceRepo.findTop1ByDateLessThanEqual(new Date());
+            dto.setPrice(productPrice.getPrice());
+            return dto;
+        })
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ProductDTO> showByCategoryAndName(Integer categoryID, String value) {
+        return productRepo.findByCategory_CategoryIDAndNameLike(categoryID, "%" + value + "%").stream()
+                .map(e -> {
+                    ProductDTO dto = ProductDTO.toDTO(e);
+                    DiscountDetail discountDetail = discountDetailRepo
+                            .findTopByProduct_ProductIDAndDiscount_StartTimeLessThanEqualAndDiscount_EndTimeGreaterThanEqual(
+                                    dto.getProductID(), new Date(), new Date()).orElse(null);
+                    if (discountDetail != null) {
+                        dto.setDiscountPercent(discountDetail.getDiscountPercent());
+                    }
+                    ProductPrice productPrice = productPriceRepo.findTop1ByDateLessThanEqual(new Date());
+                    dto.setPrice(productPrice.getPrice());
+                    return dto;
+                }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ProductDTO> showByName(String value) {
+        return productRepo.findByNameLike("%" + value + "%").stream().map(e -> {
+            ProductDTO dto = ProductDTO.toDTO(e);
+            DiscountDetail discountDetail = discountDetailRepo
+                    .findTopByProduct_ProductIDAndDiscount_StartTimeLessThanEqualAndDiscount_EndTimeGreaterThanEqual(
+                            dto.getProductID(), new Date(), new Date()).orElse(null);
+            if (discountDetail != null) {
+                dto.setDiscountPercent(discountDetail.getDiscountPercent());
+            }
+            ProductPrice productPrice = productPriceRepo.findTop1ByDateLessThanEqual(new Date());
+            dto.setPrice(productPrice.getPrice());
+            return dto;
+        }).collect(Collectors.toList());
     }
 }

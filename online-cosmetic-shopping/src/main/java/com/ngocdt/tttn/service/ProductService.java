@@ -10,6 +10,8 @@ import java.util.List;
 
 public interface ProductService {
     List<ProductDTO> showByCategory(Integer categoryID);
+    List<ProductDTO> showByCategoryAndName(Integer categoryID, String value);
+    List<ProductDTO> showByName(String value);
     List<ProductDTO> showAll();
     ProductDTO showOne(Integer id);
     ProductDTO update(ProductDTO dto);
