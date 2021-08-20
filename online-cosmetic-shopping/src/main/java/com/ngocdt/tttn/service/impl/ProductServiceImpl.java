@@ -45,17 +45,6 @@ public class ProductServiceImpl implements ProductService {
             dto.setPrice(productPrice.getPrice());
             return dto;
         }).collect(Collectors.toList());
-//        for (ProductDTO p : productDTOSs
-//        ) {
-//            DiscountDetail discountDetail = discountDetailRepo
-//                    .findTopByProduct_ProductIDAndDiscount_StartTimeLessThanEqualAndDiscount_EndTimeGreaterThanEqual(
-//                            p.getProductID(), new Date(), new Date()).orElse(null);
-//            if (discountDetail != null) {
-//                p.setDiscountPercent(discountDetail.getDiscountPercent());
-//            }
-//            ProductPrice productPrice = productPriceRepo.findTop1ByDateLessThanEqual(new Date());
-//            p.setPrice(productPrice.getPrice());
-//        }
         return productDTOSs;
     }
 
