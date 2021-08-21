@@ -1,9 +1,7 @@
 package com.ngocdt.tttn.service.impl;
 
-import com.ngocdt.tttn.dto.AddressDTO;
 import com.ngocdt.tttn.dto.OrderDTO;
 import com.ngocdt.tttn.dto.OrderDetailDTO;
-import com.ngocdt.tttn.dto.ProductDTO;
 import com.ngocdt.tttn.entity.*;
 import com.ngocdt.tttn.exception.BadRequestException;
 import com.ngocdt.tttn.repository.*;
@@ -43,10 +41,9 @@ public class OrderServiceImpl implements OrderService {
     public OrderDTO create(OrderDTO dto, HttpServletRequest request) {
         Order order = new Order();
         Account accountCurrent = accountRepo.findByEmail(request.getAttribute("email").toString()).get();
-        if(accountCurrent == null){
-            throw new BadRequestException("Account is not exist.");
+        if (accountCurrent != null) {
+            order.setCustomer(accountCurrent.getCustomer());
         }
-        order.setCustomer(accountCurrent.getCustomer());
         order.setTotalDiscount(0);
         order.setTotalPrice(0);
         order.setReceiverAddress(dto.getAddress().getReceiverAddress());
@@ -60,7 +57,7 @@ public class OrderServiceImpl implements OrderService {
         for (OrderDetailDTO detail : dto.getOrderDetails()) {
             Product product = productRepo.findById(detail.getProductID())
                     .orElseThrow(() -> new BadRequestException("Not found product."));
-            if(detail.getQuantity()> product.getQuantity())
+            if (detail.getQuantity() > product.getQuantity())
                 throw new BadRequestException("Product is not enough.");
             DiscountDetail discountDetails = discountDetailRepo
                     .findTopByProduct_ProductIDAndDiscount_StartTimeLessThanEqualAndDiscount_EndTimeGreaterThanEqual(
@@ -68,7 +65,7 @@ public class OrderServiceImpl implements OrderService {
             float discount = 0;
             float productPrice = productPriceRepo
                     .findTop1ByProduct_ProductIDAndDateLessThanEqual(product.getProductID(), new Date()).getPrice();
-            if(discountDetails!=null){
+            if (discountDetails != null) {
                 discount = discountDetails.getDiscountPercent();
                 totalDiscount += discountDetails.getDiscountPercent() * productPrice * detail.getQuantity();
             }
