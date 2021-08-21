@@ -37,6 +37,17 @@ public class Product {
 	@Column
 	private String direction;
 
+	@Column
+	private String volumn;
+
+	public String getVolumn() {
+		return volumn;
+	}
+
+	public void setVolumn(String volumn) {
+		this.volumn = volumn;
+	}
+
 	@Column(nullable=false)
 	private String description;
 

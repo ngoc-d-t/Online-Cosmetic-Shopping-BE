@@ -1,6 +1,7 @@
 package com.ngocdt.tttn.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ngocdt.tttn.entity.Account;
 import com.ngocdt.tttn.entity.Address;
 import com.ngocdt.tttn.entity.Customer;
@@ -23,6 +24,7 @@ public class RegisterDTO {
     @Email(message = "Not a email.")
     private String email;
     @Length(min = 8, max = 36, message = "")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
     private String phoneNumber;
     private String address;

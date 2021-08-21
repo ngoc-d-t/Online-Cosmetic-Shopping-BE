@@ -47,14 +47,12 @@ public class ProductController {
         return ResponseEntity.ok().body(productService.create(dto, request));
     }
 
-    @Secured("ADMIN")
     @PutMapping()
     public ResponseEntity<ProductDTO> update(@Valid @RequestBody ProductDTO dto) {
         return ResponseEntity.ok().body(productService.update(dto));
     }
 
-    @Secured("ADMIN")
-    @DeleteMapping()
+    @DeleteMapping("/admin/products")
     public ResponseEntity<Void> delete(@RequestParam("id") Integer id) {
         productService.delete(id);
         return ResponseEntity.ok().build();

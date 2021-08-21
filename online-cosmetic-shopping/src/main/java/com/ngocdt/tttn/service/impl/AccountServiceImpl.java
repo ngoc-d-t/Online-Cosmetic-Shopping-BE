@@ -46,9 +46,8 @@ public class AccountServiceImpl implements AccountService{
     @Override
     @Transactional
     public AccountDTO create(AccountDTO dto) {
-        System.out.println("employee: "+dto.getEmployeeID());
         Account account = AccountDTO.toEntity(dto);
-        Employee employee = employeeRepo.findById(dto.getEmployeeID()).orElseThrow(
+        Employee employee = employeeRepo.findById(dto.getEmployee().getEmployeeID()).orElseThrow(
                 () -> new BadRequestException("Employee not found."));
         account.setEmployee(employee);
         Role role = roleRepo.findByRoleName(ROLE.ROLE_ADMIN).orElseThrow(()-> new ConflictException("Role not found."));
@@ -61,6 +60,18 @@ public class AccountServiceImpl implements AccountService{
     @Override
     public void delete(HttpServletRequest request) {
 
+    }
+
+    @Override
+    public String showUserName(Account account) {
+        if(account == null)
+            throw new BadRequestException("Account is empty.");
+        Account acc = accountRepo.findByAccountID(account.getAccountID()).get();
+        if(acc.getCustomer() != null)
+            return acc.getCustomer().getFullname();
+        else if(acc.getEmployee() != null)
+            return acc.getEmployee().getName();
+        return "";
     }
 
 }

@@ -2,6 +2,7 @@ package com.ngocdt.tttn.service.impl;
 
 import com.ngocdt.tttn.dto.AccountDTO;
 import com.ngocdt.tttn.dto.AddressDTO;
+import com.ngocdt.tttn.dto.AuthDTO;
 import com.ngocdt.tttn.dto.RegisterDTO;
 import com.ngocdt.tttn.entity.Account;
 import com.ngocdt.tttn.entity.Address;
@@ -14,6 +15,7 @@ import com.ngocdt.tttn.repository.AddressRepository;
 import com.ngocdt.tttn.repository.CustomerRepository;
 import com.ngocdt.tttn.repository.RoleRepository;
 import com.ngocdt.tttn.security.jwt.JwtUtils;
+import com.ngocdt.tttn.security.service.UserDetailsImpl;
 import com.ngocdt.tttn.service.AddressService;
 import com.ngocdt.tttn.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -41,11 +43,14 @@ public class AuthServiceImpl implements AuthService {
     private final AddressRepository addressRepo;
     private final AddressService addressService;
     @Override
-    public String signIn(AccountDTO dto) {
+    public AuthDTO signIn(AccountDTO dto) {
         Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        return jwtService.generateJwtToken(authentication);
+        AuthDTO authDTO = new AuthDTO();
+        authDTO.setToken(jwtService.generateJwtToken(authentication));
+        authDTO.setAccount(AccountDTO.toDTO(accountRepo.findByEmail(dto.getEmail()).get()));
+        return authDTO;
     }
 
     @Override

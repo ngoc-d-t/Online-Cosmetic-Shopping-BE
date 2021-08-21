@@ -20,6 +20,8 @@ public class OrderDTO {
     private float totalDiscount;
     private int customerID;
     private int employeeID;
+    private AddressDTO address;
+    private float paid;
     private List<OrderDetailDTO> orderDetails;
 
     public static OrderDTO toDTO(Order order) {
@@ -30,6 +32,12 @@ public class OrderDTO {
         dto.setDate(order.getDate());
         dto.setTotalPrice(order.getTotalPrice());
         dto.setTotalDiscount(order.getTotalDiscount());
+        AddressDTO add = new AddressDTO();
+        add.setReceiverAddress(order.getReceiverAddress());
+        add.setReceiverName(order.getReceiverName());
+        add.setPhoneNumber(order.getPhoneNumber());
+        dto.setAddress(add);
+        dto.setPaid(order.getPaid());
         List<OrderDetailDTO> detailDTOS = new ArrayList<>();
         for (OrderDetail detail : order.getOrderDetails()
         ) {
@@ -94,5 +102,21 @@ public class OrderDTO {
 
     public void setTotalDiscount(float totalDiscount) {
         this.totalDiscount = totalDiscount;
+    }
+
+    public AddressDTO getAddress() {
+        return address;
+    }
+
+    public void setAddress(AddressDTO address) {
+        this.address = address;
+    }
+
+    public float getPaid() {
+        return paid;
+    }
+
+    public void setPaid(float paid) {
+        this.paid = paid;
     }
 }

@@ -41,7 +41,8 @@ public class ProductServiceImpl implements ProductService {
             if (discountDetail != null) {
                 dto.setDiscountPercent(discountDetail.getDiscountPercent());
             }
-            ProductPrice productPrice = productPriceRepo.findTop1ByDateLessThanEqual(new Date());
+            ProductPrice productPrice = productPriceRepo
+                    .findTop1ByProduct_ProductIDAndDateLessThanEqual(e.getProductID(), new Date());
             dto.setPrice(productPrice.getPrice());
             return dto;
         }).collect(Collectors.toList());
@@ -57,7 +58,7 @@ public class ProductServiceImpl implements ProductService {
         if (discountDetail != null) {
             dto.setDiscountPercent(discountDetail.getDiscountPercent());
         }
-        ProductPrice productPrice = productPriceRepo.findTop1ByDateLessThanEqual(new Date());
+        ProductPrice productPrice = productPriceRepo.findTop1ByProduct_ProductIDAndDateLessThanEqual(id, new Date());
         dto.setPrice(productPrice.getPrice());
         return dto;
     }
@@ -99,7 +100,6 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductPriceDTO createProductPrice(ProductPriceDTO dto) {
-        System.out.println(dto.getDate());
         ProductPrice productPrice = ProductPriceDTO.toEntity(dto);
         return ProductPriceDTO.toDTO(productPriceRepo.save(productPrice));
     }
@@ -114,7 +114,8 @@ public class ProductServiceImpl implements ProductService {
             if (discountDetail != null) {
                 dto.setDiscountPercent(discountDetail.getDiscountPercent());
             }
-            ProductPrice productPrice = productPriceRepo.findTop1ByDateLessThanEqual(new Date());
+            ProductPrice productPrice = productPriceRepo.findTop1ByProduct_ProductIDAndDateLessThanEqual(e.getProductID()
+                    , new Date());
             dto.setPrice(productPrice.getPrice());
             return dto;
         })
@@ -132,7 +133,8 @@ public class ProductServiceImpl implements ProductService {
                     if (discountDetail != null) {
                         dto.setDiscountPercent(discountDetail.getDiscountPercent());
                     }
-                    ProductPrice productPrice = productPriceRepo.findTop1ByDateLessThanEqual(new Date());
+                    ProductPrice productPrice = productPriceRepo
+                            .findTop1ByProduct_ProductIDAndDateLessThanEqual(e.getProductID(), new Date());
                     dto.setPrice(productPrice.getPrice());
                     return dto;
                 }).collect(Collectors.toList());
@@ -148,7 +150,8 @@ public class ProductServiceImpl implements ProductService {
             if (discountDetail != null) {
                 dto.setDiscountPercent(discountDetail.getDiscountPercent());
             }
-            ProductPrice productPrice = productPriceRepo.findTop1ByDateLessThanEqual(new Date());
+            ProductPrice productPrice = productPriceRepo
+                    .findTop1ByProduct_ProductIDAndDateLessThanEqual(e.getProductID(), new Date());
             dto.setPrice(productPrice.getPrice());
             return dto;
         }).collect(Collectors.toList());

@@ -23,6 +23,7 @@ public class ProductDTO {
     private float price;
     private int employeeID;
     private float discountPercent;
+    private String volumn;
 
     public static ProductDTO toDTO(Product pro) {
         if (pro == null) {
@@ -37,7 +38,7 @@ public class ProductDTO {
         dto.setDirection(pro.getDirection());
         dto.setDescription(pro.getDescription());
         dto.setCategoryID(pro.getCategory().getCategoryID());
-
+        dto.setVolumn(pro.getVolumn());
         dto.setEmployeeID(pro.getEmployee().getEmployeeID());
 
         return dto;
@@ -55,7 +56,7 @@ public class ProductDTO {
         pro.setQuantity(dto.getQuantity());
         pro.setDirection(dto.getDirection());
         pro.setDescription(dto.getDescription());
-
+        pro.setVolumn(dto.getVolumn());
         Category category = new Category();
         category.setCategoryID(dto.getCategoryID());
         pro.setCategory(category);
@@ -139,6 +140,13 @@ public class ProductDTO {
         this.categoryID = categoryID;
     }
 
+    public String getVolumn() {
+        return volumn;
+    }
+
+    public void setVolumn(String volumn) {
+        this.volumn = volumn;
+    }
 
     public float getPrice() {
         return price;

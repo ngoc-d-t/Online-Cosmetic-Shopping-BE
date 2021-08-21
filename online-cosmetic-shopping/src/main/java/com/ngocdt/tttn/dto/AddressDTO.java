@@ -21,7 +21,7 @@ public class AddressDTO {
     @NotBlank(message = "Can be not empty.")
     private String receiverName;
     @NotBlank(message = "Can be not empty.")
-    private String address;
+    private String receiverAddress;
     private int customerID;
 
     public static AddressDTO toDTO(Address address){
@@ -31,7 +31,7 @@ public class AddressDTO {
         dto.setAddressID(address.getAddressID());
         dto.setPhoneNumber(address.getPhoneNumber());
         dto.setReceiverName(address.getReceiverName());
-        dto.setAddress(address.getAddress());
+        dto.setReceiverAddress(address.getAddress());
         if(address.getCustomer() == null)
             return dto;
         dto.setCustomerID(address.getCustomer().getCustomerID());
@@ -44,7 +44,7 @@ public class AddressDTO {
         address.setAddressID(dto.getAddressID());
         address.setPhoneNumber(dto.getPhoneNumber());
         address.setReceiverName(dto.getReceiverName());
-        address.setAddress(dto.getAddress());
+        address.setAddress(dto.getReceiverAddress());
         if(dto.getCustomerID() == 0)
             return address;
         Customer customer = new Customer();
@@ -78,12 +78,12 @@ public class AddressDTO {
         this.receiverName = receiverName;
     }
 
-    public String getAddress() {
-        return address;
+    public String getReceiverAddress() {
+        return receiverAddress;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setReceiverAddress(String receiverAddress) {
+        this.receiverAddress = receiverAddress;
     }
 
     public int getCustomerID() {

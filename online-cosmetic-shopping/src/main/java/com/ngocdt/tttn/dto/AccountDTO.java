@@ -1,6 +1,9 @@
 package com.ngocdt.tttn.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ngocdt.tttn.entity.Account;
+import com.ngocdt.tttn.entity.Customer;
 import com.ngocdt.tttn.enums.ROLE;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
@@ -13,9 +16,11 @@ public class AccountDTO {
     private int accountID;
     @Email(message = "Not a email.")
     private String email;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Length(min = 8, max = 36, message = "Password is invalid.")
     private String password;
-    private int employeeID;
+    private EmployeeDTO employee;
+    private CustomerDTO customer;
 
     public static Account toEntity(AccountDTO dto) {
         if (dto == null)
@@ -30,11 +35,11 @@ public class AccountDTO {
         if (account == null)
             return null;
         AccountDTO dto = new AccountDTO();
+        dto.setAccountID(account.getAccountID());
         dto.setEmail(account.getEmail());
         dto.setPassword(account.getPassword());
-
-        if (account.getEmployee() != null)
-            dto.setEmployeeID(account.getEmployee().getEmployeeID());
+        dto.setEmployee(EmployeeDTO.toDTO(account.getEmployee()));
+        dto.setCustomer(CustomerDTO.toDTO(account.getCustomer()));
         return dto;
     }
 
@@ -62,12 +67,19 @@ public class AccountDTO {
         this.accountID = accountID;
     }
 
-    public int getEmployeeID() {
-        return employeeID;
+    public EmployeeDTO getEmployee() {
+        return employee;
     }
 
-    public void setEmployeeID(int employeeID) {
-        this.employeeID = employeeID;
+    public void setEmployee(EmployeeDTO employee) {
+        this.employee = employee;
     }
 
+    public CustomerDTO getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(CustomerDTO customer) {
+        this.customer = customer;
+    }
 }

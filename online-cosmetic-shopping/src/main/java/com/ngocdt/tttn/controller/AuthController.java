@@ -1,6 +1,7 @@
 package com.ngocdt.tttn.controller;
 
 import com.ngocdt.tttn.dto.AccountDTO;
+import com.ngocdt.tttn.dto.AuthDTO;
 import com.ngocdt.tttn.dto.RegisterDTO;
 import com.ngocdt.tttn.service.AuthService;
 import com.ngocdt.tttn.service.impl.AuthServiceImpl;
@@ -24,7 +25,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/authenticate")
-    public ResponseEntity<String> signin(@Valid @RequestBody  AccountDTO dto){
+    public ResponseEntity<AuthDTO> signin(@Valid @RequestBody  AccountDTO dto){
         return ResponseEntity.ok().body(authService.signIn(dto));
     }
 

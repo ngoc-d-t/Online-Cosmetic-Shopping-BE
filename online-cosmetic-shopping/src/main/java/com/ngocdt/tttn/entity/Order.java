@@ -8,6 +8,7 @@ import javax.persistence.*;
 import com.ngocdt.tttn.enums.OrderState;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.stereotype.Controller;
 
 @Entity
 @Table(name="Orders")
@@ -31,6 +32,18 @@ public class Order {
 
 	@Column
 	private float totalDiscount;
+
+	@Column
+	private String receiverName;
+
+	@Column
+	private String phoneNumber;
+
+	@Column
+	private String receiverAddress;
+
+	@Column
+	private float paid;
 
 	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="customerID")
@@ -117,5 +130,37 @@ public class Order {
 
 	public void setOrderDetails(List<OrderDetail> orderDetails) {
 		this.orderDetails = orderDetails;
+	}
+
+	public String getReceiverName() {
+		return receiverName;
+	}
+
+	public float getPaid() {
+		return paid;
+	}
+
+	public void setPaid(float paid) {
+		this.paid = paid;
+	}
+
+	public void setReceiverName(String receiverName) {
+		this.receiverName = receiverName;
+	}
+
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+
+	public String getReceiverAddress() {
+		return receiverAddress;
+	}
+
+	public void setReceiverAddress(String receiverAddress) {
+		this.receiverAddress = receiverAddress;
 	}
 }
