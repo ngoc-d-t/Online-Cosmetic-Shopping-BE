@@ -55,13 +55,13 @@ public class OrderServiceImpl implements OrderService {
         List<OrderDetail> details = new ArrayList<>();
         float totalDiscount = 0;
         for (OrderDetailDTO detail : dto.getOrderDetails()) {
-            Product product = productRepo.findById(detail.getProductID())
+            Product product = productRepo.findById(detail.getProduct().getProductID())
                     .orElseThrow(() -> new BadRequestException("Not found product."));
             if (detail.getQuantity() > product.getQuantity())
                 throw new BadRequestException("Product is not enough.");
             DiscountDetail discountDetails = discountDetailRepo
                     .findTopByProduct_ProductIDAndDiscount_StartTimeLessThanEqualAndDiscount_EndTimeGreaterThanEqual(
-                            detail.getProductID(), new Date(), new Date()).orElse(null);
+                            detail.getProduct().getProductID(), new Date(), new Date()).orElse(null);
             float discount = 0;
             float productPrice = productPriceRepo
                     .findTop1ByProduct_ProductIDAndDateLessThanEqual(product.getProductID(), new Date()).getPrice();
@@ -93,7 +93,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDetailDTO createDetail(OrderDetailDTO dto) {
-        if (!productRepo.existsById(dto.getProductID())) {
+        if (!productRepo.existsById(dto.getProduct().getProductID())) {
             throw new BadRequestException("Product not found.");
         }
         OrderDetail od = OrderDetailDTO.toEntity(dto);

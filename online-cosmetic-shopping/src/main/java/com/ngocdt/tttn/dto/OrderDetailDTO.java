@@ -11,7 +11,7 @@ public class OrderDetailDTO {
     private float discount;
     private int quantity;
     private int orderID;
-    private int productID;
+    private ProductDTO product;
     public static OrderDetailDTO toDTO(OrderDetail orderDetail) {
         if (orderDetail == null)
             return null;
@@ -21,7 +21,8 @@ public class OrderDetailDTO {
         dto.setDiscount(orderDetail.getDiscount());
         dto.setQuantity(orderDetail.getQuantity());
         dto.setOrderID(orderDetail.getOrder().getOrderID());
-        dto.setProductID(orderDetail.getProduct().getProductID());
+        ProductDTO pro = ProductDTO.toDTO(orderDetail.getProduct());
+        dto.setProduct(pro);
         return dto;
     }
 
@@ -39,7 +40,7 @@ public class OrderDetailDTO {
         orderDetail.setOrder(order);
 
         Product product = new Product();
-        product.setProductID(dto.getProductID());
+        product.setProductID(dto.getProduct().getProductID());
         orderDetail.setProduct(product);
         return orderDetail;
     }
@@ -84,11 +85,11 @@ public class OrderDetailDTO {
         this.orderID = orderID;
     }
 
-    public int getProductID() {
-        return productID;
+    public ProductDTO getProduct() {
+        return product;
     }
 
-    public void setProductID(int productID) {
-        this.productID = productID;
+    public void setProduct(ProductDTO product) {
+        this.product = product;
     }
 }

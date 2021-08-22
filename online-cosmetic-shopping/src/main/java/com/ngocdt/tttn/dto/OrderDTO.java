@@ -3,6 +3,7 @@ package com.ngocdt.tttn.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ngocdt.tttn.entity.Order;
 import com.ngocdt.tttn.entity.OrderDetail;
+import com.ngocdt.tttn.enums.OrderState;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,6 +23,7 @@ public class OrderDTO {
     private int employeeID;
     private AddressDTO address;
     private float paid;
+    private OrderState state ;
     private List<OrderDetailDTO> orderDetails;
 
     public static OrderDTO toDTO(Order order) {
@@ -38,6 +40,7 @@ public class OrderDTO {
         add.setPhoneNumber(order.getPhoneNumber());
         dto.setAddress(add);
         dto.setPaid(order.getPaid());
+        dto.setState(order.getState());
         List<OrderDetailDTO> detailDTOS = new ArrayList<>();
         for (OrderDetail detail : order.getOrderDetails()
         ) {
@@ -118,5 +121,13 @@ public class OrderDTO {
 
     public void setPaid(float paid) {
         this.paid = paid;
+    }
+
+    public OrderState getState() {
+        return state;
+    }
+
+    public void setState(OrderState state) {
+        this.state = state;
     }
 }
