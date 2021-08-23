@@ -63,13 +63,14 @@ public class OrderServiceImpl implements OrderService {
                     .findTopByProduct_ProductIDAndDiscount_StartTimeLessThanEqualAndDiscount_EndTimeGreaterThanEqual(
                             detail.getProduct().getProductID(), new Date(), new Date()).orElse(null);
             float discount = 0;
-            float productPrice = productPriceRepo
-                    .findTop1ByProduct_ProductIDAndDateLessThanEqual(product.getProductID(), new Date()).getPrice();
+            List<ProductPrice> productPrice = productPriceRepo
+                    .findByProduct_ProductIDAndAndDateIsLessThanEqual(detail.getProduct().getProductID(), new Date());
+            float price = productPrice.get(productPrice.size() - 1).getPrice();
             if (discountDetails != null) {
                 discount = discountDetails.getDiscountPercent();
-                totalDiscount += discountDetails.getDiscountPercent() * productPrice * detail.getQuantity();
+                totalDiscount += discountDetails.getDiscountPercent() * price * detail.getQuantity();
             }
-            detail.setPrice(productPrice);
+            detail.setPrice(price);
             detail.setDiscount(discount);
             detail.setOrderID(order.getOrderID());
             details.add(OrderDetailDTO.toEntity(createDetail(detail)));

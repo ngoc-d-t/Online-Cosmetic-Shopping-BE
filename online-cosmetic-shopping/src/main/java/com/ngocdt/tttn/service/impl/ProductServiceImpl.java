@@ -41,9 +41,9 @@ public class ProductServiceImpl implements ProductService {
             if (discountDetail != null) {
                 dto.setDiscountPercent(discountDetail.getDiscountPercent());
             }
-            ProductPrice productPrice = productPriceRepo
-                    .findTop1ByProduct_ProductIDAndDateLessThanEqual(e.getProductID(), new Date());
-            dto.setPrice(productPrice.getPrice());
+            List<ProductPrice> productPrice = productPriceRepo
+                    .findByProduct_ProductIDAndAndDateIsLessThanEqual(e.getProductID(), new Date());
+            dto.setPrice(productPrice.get(productPrice.size() - 1).getPrice());
             return dto;
         }).collect(Collectors.toList());
         return productDTOSs;
@@ -58,8 +58,10 @@ public class ProductServiceImpl implements ProductService {
         if (discountDetail != null) {
             dto.setDiscountPercent(discountDetail.getDiscountPercent());
         }
-        ProductPrice productPrice = productPriceRepo.findTop1ByProduct_ProductIDAndDateLessThanEqual(id, new Date());
-        dto.setPrice(productPrice.getPrice());
+        List<ProductPrice> productPrice = productPriceRepo
+                .findByProduct_ProductIDAndAndDateIsLessThanEqual(id, new Date());
+        dto.setPrice(productPrice.get(productPrice.size() - 1).getPrice());
+
         return dto;
     }
 
@@ -67,8 +69,19 @@ public class ProductServiceImpl implements ProductService {
     public ProductDTO update(ProductDTO dto) {
         if (!productRepo.existsById(dto.getProductID()))
             throw new BadRequestException("Bad request.");
+
         Product pro = ProductDTO.toEntity(dto);
-        return ProductDTO.toDTO(productRepo.save(pro));
+        pro = productRepo.save(pro);
+
+        ProductPriceDTO price = new ProductPriceDTO();
+        price.setDate(new Date());
+        price.setPrice(dto.getPrice());
+        price.setProductID(pro.getProductID());
+        price = createProductPrice(price);
+
+        dto = ProductDTO.toDTO(pro);
+        dto.setPrice(price.getPrice());
+        return dto;
     }
 
     @Override
@@ -114,9 +127,9 @@ public class ProductServiceImpl implements ProductService {
             if (discountDetail != null) {
                 dto.setDiscountPercent(discountDetail.getDiscountPercent());
             }
-            ProductPrice productPrice = productPriceRepo.findTop1ByProduct_ProductIDAndDateLessThanEqual(e.getProductID()
-                    , new Date());
-            dto.setPrice(productPrice.getPrice());
+            List<ProductPrice> productPrice = productPriceRepo
+                    .findByProduct_ProductIDAndAndDateIsLessThanEqual(e.getProductID(), new Date());
+            dto.setPrice(productPrice.get(productPrice.size() - 1).getPrice());
             return dto;
         })
                 .collect(Collectors.toList());
@@ -133,9 +146,9 @@ public class ProductServiceImpl implements ProductService {
                     if (discountDetail != null) {
                         dto.setDiscountPercent(discountDetail.getDiscountPercent());
                     }
-                    ProductPrice productPrice = productPriceRepo
-                            .findTop1ByProduct_ProductIDAndDateLessThanEqual(e.getProductID(), new Date());
-                    dto.setPrice(productPrice.getPrice());
+                    List<ProductPrice> productPrice = productPriceRepo
+                            .findByProduct_ProductIDAndAndDateIsLessThanEqual(e.getProductID(), new Date());
+                    dto.setPrice(productPrice.get(productPrice.size() - 1).getPrice());
                     return dto;
                 }).collect(Collectors.toList());
     }
@@ -150,9 +163,9 @@ public class ProductServiceImpl implements ProductService {
             if (discountDetail != null) {
                 dto.setDiscountPercent(discountDetail.getDiscountPercent());
             }
-            ProductPrice productPrice = productPriceRepo
-                    .findTop1ByProduct_ProductIDAndDateLessThanEqual(e.getProductID(), new Date());
-            dto.setPrice(productPrice.getPrice());
+            List<ProductPrice> productPrice = productPriceRepo
+                    .findByProduct_ProductIDAndAndDateIsLessThanEqual(e.getProductID(), new Date());
+            dto.setPrice(productPrice.get(productPrice.size() - 1).getPrice());
             return dto;
         }).collect(Collectors.toList());
     }

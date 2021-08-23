@@ -47,7 +47,7 @@ public class ProductController {
         return ResponseEntity.ok().body(productService.create(dto, request));
     }
 
-    @PutMapping()
+    @PutMapping("/admin/products")
     public ResponseEntity<ProductDTO> update(@Valid @RequestBody ProductDTO dto) {
         return ResponseEntity.ok().body(productService.update(dto));
     }

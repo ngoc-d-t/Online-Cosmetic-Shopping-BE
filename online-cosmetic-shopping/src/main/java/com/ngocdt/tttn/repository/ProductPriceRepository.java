@@ -5,7 +5,8 @@ import com.ngocdt.tttn.entity.ProductPriceKey;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Date;
+import java.util.List;
 
 public interface ProductPriceRepository extends JpaRepository<ProductPrice, ProductPriceKey> {
-    ProductPrice findTop1ByProduct_ProductIDAndDateLessThanEqual(Integer id, Date date);
+    List<ProductPrice> findByProduct_ProductIDAndAndDateIsLessThanEqual(Integer id, Date date);
 }
