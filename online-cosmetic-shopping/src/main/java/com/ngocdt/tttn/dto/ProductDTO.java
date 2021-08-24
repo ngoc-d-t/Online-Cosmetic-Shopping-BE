@@ -37,9 +37,9 @@ public class ProductDTO {
         dto.setQuantity(pro.getQuantity());
         dto.setDirection(pro.getDirection());
         dto.setDescription(pro.getDescription());
-        dto.setCategoryID(pro.getCategory().getCategoryID());
+//        dto.setCategoryID(pro.getCategory().getCategoryID());
         dto.setVolumn(pro.getVolumn());
-        dto.setEmployeeID(pro.getEmployee().getEmployeeID());
+//        dto.setEmployeeID(pro.getEmployee().getEmployeeID());
 
         return dto;
     }

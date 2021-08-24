@@ -2,6 +2,7 @@ package com.ngocdt.tttn.service.impl;
 
 import com.ngocdt.tttn.dto.OrderDTO;
 import com.ngocdt.tttn.dto.OrderDetailDTO;
+import com.ngocdt.tttn.dto.ProductDTO;
 import com.ngocdt.tttn.entity.*;
 import com.ngocdt.tttn.exception.BadRequestException;
 import com.ngocdt.tttn.repository.*;
@@ -73,6 +74,7 @@ public class OrderServiceImpl implements OrderService {
             detail.setPrice(price);
             detail.setDiscount(discount);
             detail.setOrderID(order.getOrderID());
+            detail.setProduct(ProductDTO.toDTO(product));
             details.add(OrderDetailDTO.toEntity(createDetail(detail)));
             int sumQuantity = product.getQuantity() - detail.getQuantity();
             product.setQuantity(sumQuantity);
