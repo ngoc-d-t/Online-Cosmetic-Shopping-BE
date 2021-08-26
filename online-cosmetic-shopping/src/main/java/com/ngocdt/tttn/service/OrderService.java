@@ -17,4 +17,9 @@ public interface OrderService {
 
     OrderDetailDTO createDetail(OrderDetailDTO dto);
 
+    void confirm(Integer id);
+
+    void delivering(Integer id);
+
+    void delivered(Integer id);
 }

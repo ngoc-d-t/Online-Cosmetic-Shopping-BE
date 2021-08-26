@@ -4,7 +4,9 @@ import com.ngocdt.tttn.dto.OrderDTO;
 import com.ngocdt.tttn.dto.OrderDetailDTO;
 import com.ngocdt.tttn.dto.ProductDTO;
 import com.ngocdt.tttn.entity.*;
+import com.ngocdt.tttn.enums.OrderState;
 import com.ngocdt.tttn.exception.BadRequestException;
+import com.ngocdt.tttn.exception.NotFoundException;
 import com.ngocdt.tttn.repository.*;
 import com.ngocdt.tttn.service.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -51,6 +53,8 @@ public class OrderServiceImpl implements OrderService {
         order.setReceiverName(dto.getAddress().getReceiverName());
         order.setPhoneNumber(dto.getAddress().getPhoneNumber());
         order.setPaid(dto.getPaid());
+        if (dto.getPaid() != 0)
+            order.setState(OrderState.PAID);
         order = orderRepo.save(order);
 
         List<OrderDetail> details = new ArrayList<>();
@@ -76,6 +80,7 @@ public class OrderServiceImpl implements OrderService {
             detail.setOrderID(order.getOrderID());
             detail.setProduct(ProductDTO.toDTO(product));
             details.add(OrderDetailDTO.toEntity(createDetail(detail)));
+
             int sumQuantity = product.getQuantity() - detail.getQuantity();
             product.setQuantity(sumQuantity);
             productRepo.save(product);
@@ -99,9 +104,40 @@ public class OrderServiceImpl implements OrderService {
         if (!productRepo.existsById(dto.getProduct().getProductID())) {
             throw new BadRequestException("Product not found.");
         }
+        Product product = productRepo.findById(dto.getProduct().getProductID()).get();
         OrderDetail od = OrderDetailDTO.toEntity(dto);
         od.setOrderDetailID(0);
-        return OrderDetailDTO.toDTO(orderDetailRepo.save(od));
+        od = orderDetailRepo.save(od);
+        od.setProduct(product);
+        return OrderDetailDTO.toDTO(od);
+    }
+
+    @Override
+    public void confirm(Integer id) {
+        Order order = orderRepo.findById(id).orElseThrow(() -> new NotFoundException("Order not found"));
+        if (order.getState() != OrderState.UNCONFIRMED && order.getState() != OrderState.PAID)
+            throw new BadRequestException("Can not change state");
+        order.setState(OrderState.CONFIRMED);
+        orderRepo.save(order);
+    }
+
+    @Override
+    public void delivering(Integer id) {
+        Order order = orderRepo.findById(id).orElseThrow(() -> new NotFoundException("Order not found"));
+        if (order.getState() != OrderState.CONFIRMED)
+            throw new BadRequestException("Can not change state");
+        order.setState(OrderState.DELIVERING);
+        orderRepo.save(order);
+    }
+
+    @Override
+    public void delivered(Integer id) {
+        Order order = orderRepo.findById(id).orElseThrow(() -> new NotFoundException("Order not found"));
+        if (order.getState() != OrderState.DELIVERING)
+            throw new BadRequestException("Can not change state");
+        order.setState(OrderState.DELIVERED);
+        order.setPaid(order.getTotalPrice() - order.getTotalDiscount());
+        orderRepo.save(order);
     }
 
 }

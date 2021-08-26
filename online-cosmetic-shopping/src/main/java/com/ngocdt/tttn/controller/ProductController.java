@@ -48,8 +48,8 @@ public class ProductController {
     }
 
     @PutMapping("/admin/products")
-    public ResponseEntity<ProductDTO> update(@Valid @RequestBody ProductDTO dto) {
-        return ResponseEntity.ok().body(productService.update(dto));
+    public ResponseEntity<ProductDTO> update(@Valid @RequestBody ProductDTO dto, HttpServletRequest request) {
+        return ResponseEntity.ok().body(productService.update(dto, request));
     }
 
     @DeleteMapping("/admin/products")
@@ -57,5 +57,6 @@ public class ProductController {
         productService.delete(id);
         return ResponseEntity.ok().build();
     }
+
 }
 

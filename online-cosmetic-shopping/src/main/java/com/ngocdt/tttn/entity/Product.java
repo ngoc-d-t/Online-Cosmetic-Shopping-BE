@@ -40,6 +40,17 @@ public class Product {
 	@Column
 	private String volumn;
 
+	@Column
+	private String image;
+
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
+	}
+
 	public String getVolumn() {
 		return volumn;
 	}

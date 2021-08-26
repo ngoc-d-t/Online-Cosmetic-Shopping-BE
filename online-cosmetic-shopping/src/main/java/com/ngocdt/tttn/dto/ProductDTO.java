@@ -12,7 +12,7 @@ import java.util.List;
 @Setter
 public class ProductDTO {
     private int productID;
-    @NotBlank(message = "can not be empty.")
+    @NotBlank(message = "Can not be empty.")
     private String name;
     private String branchOrigin;
     private String whereProduction;
@@ -24,6 +24,16 @@ public class ProductDTO {
     private int employeeID;
     private float discountPercent;
     private String volumn;
+    @NotBlank(message = "Can not be empty.")
+    private String image;
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
 
     public static ProductDTO toDTO(Product pro) {
         if (pro == null) {
@@ -37,9 +47,10 @@ public class ProductDTO {
         dto.setQuantity(pro.getQuantity());
         dto.setDirection(pro.getDirection());
         dto.setDescription(pro.getDescription());
-//        dto.setCategoryID(pro.getCategory().getCategoryID());
+        dto.setImage(pro.getImage());
+        dto.setCategoryID(pro.getCategory().getCategoryID());
         dto.setVolumn(pro.getVolumn());
-//        dto.setEmployeeID(pro.getEmployee().getEmployeeID());
+        dto.setEmployeeID(pro.getEmployee().getEmployeeID());
 
         return dto;
     }

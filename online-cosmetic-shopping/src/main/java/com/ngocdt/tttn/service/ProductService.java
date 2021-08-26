@@ -14,7 +14,7 @@ public interface ProductService {
     List<ProductDTO> showByName(String value);
     List<ProductDTO> showAll();
     ProductDTO showOne(Integer id);
-    ProductDTO update(ProductDTO dto);
+    ProductDTO update(ProductDTO dto, HttpServletRequest request);
     ProductDTO create(ProductDTO dto, HttpServletRequest request);
     void delete(Integer id);
 

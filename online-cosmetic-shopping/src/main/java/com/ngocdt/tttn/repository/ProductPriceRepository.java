@@ -9,4 +9,5 @@ import java.util.List;
 
 public interface ProductPriceRepository extends JpaRepository<ProductPrice, ProductPriceKey> {
     List<ProductPrice> findByProduct_ProductIDAndAndDateIsLessThanEqual(Integer id, Date date);
+    List<ProductPrice> findByProduct_ProductID(Integer id);
 }
