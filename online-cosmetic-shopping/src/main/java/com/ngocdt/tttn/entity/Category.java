@@ -26,6 +26,9 @@ public class Category {
 	
 	@Column(nullable=false)
 	private String name;
+
+	@Column
+	private String image;
 	
 	@OneToMany(fetch=FetchType.LAZY, mappedBy = "category")
 	private List<Product> products;
@@ -52,5 +55,13 @@ public class Category {
 
 	public void setProducts(List<Product> products) {
 		this.products = products;
+	}
+
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
 	}
 }

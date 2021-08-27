@@ -14,6 +14,8 @@ public class CategoryDTO {
     private int categoryID;
     @NotBlank(message="can not be empty.")
     private String name;
+    private String image;
+
 
     public static CategoryDTO toDTO(Category cate){
         if(cate==null){
@@ -22,6 +24,7 @@ public class CategoryDTO {
         CategoryDTO dto=new CategoryDTO();
         dto.setCategoryID(cate.getCategoryID());
         dto.setName(cate.getName());
+        dto.setImage(cate.getImage());
         return dto;
     }
 
@@ -35,4 +38,27 @@ public class CategoryDTO {
         return cate;
     }
 
+    public int getCategoryID() {
+        return categoryID;
+    }
+
+    public void setCategoryID(int categoryID) {
+        this.categoryID = categoryID;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
 }
