@@ -25,6 +25,7 @@ public class OrderDTO {
     private float paid;
     private OrderState state ;
     private List<OrderDetailDTO> orderDetails;
+    private float transportationFee;
 
     public static OrderDTO toDTO(Order order) {
         if (order == null)
@@ -41,6 +42,7 @@ public class OrderDTO {
         dto.setAddress(add);
         dto.setPaid(order.getPaid());
         dto.setState(order.getState());
+        dto.setTransportationFee(order.getTransportationFee());
         List<OrderDetailDTO> detailDTOS = new ArrayList<>();
         for (OrderDetail detail : order.getOrderDetails()
         ) {
@@ -129,5 +131,13 @@ public class OrderDTO {
 
     public void setState(OrderState state) {
         this.state = state;
+    }
+
+    public float getTransportationFee() {
+        return transportationFee;
+    }
+
+    public void setTransportationFee(float transportationFee) {
+        this.transportationFee = transportationFee;
     }
 }

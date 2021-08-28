@@ -53,6 +53,7 @@ public class OrderServiceImpl implements OrderService {
         order.setReceiverName(dto.getAddress().getReceiverName());
         order.setPhoneNumber(dto.getAddress().getPhoneNumber());
         order.setPaid(dto.getPaid());
+        order.setTransportationFee(dto.getTransportationFee());
         if (dto.getPaid() != 0)
             order.setState(OrderState.PAID);
         order = orderRepo.save(order);
@@ -136,7 +137,7 @@ public class OrderServiceImpl implements OrderService {
         if (order.getState() != OrderState.DELIVERING)
             throw new BadRequestException("Can not change state");
         order.setState(OrderState.DELIVERED);
-        order.setPaid(order.getTotalPrice() - order.getTotalDiscount());
+        order.setPaid(order.getTotalPrice() - order.getTotalDiscount() + order.getTransportationFee());
         orderRepo.save(order);
     }
 

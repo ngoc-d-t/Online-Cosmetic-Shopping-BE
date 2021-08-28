@@ -68,10 +68,7 @@ public class Product {
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "product")
 	private List<ProductPrice> productPrices;
-	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "product_character", joinColumns = { @JoinColumn(name = "productID") }, inverseJoinColumns = {
-			@JoinColumn(name = "characterID") })
-	private Set<Character> character = new HashSet<>();
+
 
 	@OneToMany(fetch=FetchType.LAZY,mappedBy="product")
 	private List<DiscountDetail> discountDetals = new ArrayList<>();
@@ -150,14 +147,6 @@ public class Product {
 
 	public void setCategory(Category category) {
 		this.category = category;
-	}
-
-	public Set<Character> getCharacter() {
-		return character;
-	}
-
-	public void setCharacter(Set<Character> character) {
-		this.character = character;
 	}
 
 	public List<DiscountDetail> getDiscountDetals() {

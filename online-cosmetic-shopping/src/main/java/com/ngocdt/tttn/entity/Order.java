@@ -44,6 +44,16 @@ public class Order {
 
 	@Column
 	private float paid;
+	@Column
+	private float transportationFee;
+
+	public float getTransportationFee() {
+		return transportationFee;
+	}
+
+	public void setTransportationFee(float transportationFee) {
+		this.transportationFee = transportationFee;
+	}
 
 	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="customerID")

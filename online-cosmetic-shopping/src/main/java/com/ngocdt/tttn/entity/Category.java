@@ -1,15 +1,10 @@
 package com.ngocdt.tttn.entity;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -33,6 +28,10 @@ public class Category {
 	@OneToMany(fetch=FetchType.LAZY, mappedBy = "category")
 	private List<Product> products;
 
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name = "category_character", joinColumns = { @JoinColumn(name = "categoryID") }, inverseJoinColumns = {
+			@JoinColumn(name = "characterID") })
+	private Set<Character> character = new HashSet<>();
 	public int getCategoryID() {
 		return categoryID;
 	}
@@ -59,6 +58,14 @@ public class Category {
 
 	public String getImage() {
 		return image;
+	}
+
+	public Set<Character> getCharacter() {
+		return character;
+	}
+
+	public void setCharacter(Set<Character> character) {
+		this.character = character;
 	}
 
 	public void setImage(String image) {

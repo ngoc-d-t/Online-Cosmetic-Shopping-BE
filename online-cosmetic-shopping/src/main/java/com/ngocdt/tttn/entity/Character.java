@@ -23,7 +23,31 @@ public class Character {
 	private String description;
 	
 	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "product_character", joinColumns = { @JoinColumn(name = "characterID") }, inverseJoinColumns = {
-			@JoinColumn(name = "productID") })
-	private Set<Product> product = new HashSet<>();
+	@JoinTable(name = "category_character", joinColumns = { @JoinColumn(name = "characterID") }, inverseJoinColumns = {
+			@JoinColumn(name = "categoryID") })
+	private Set<Category> categories = new HashSet<>();
+
+	public int getCharacterID() {
+		return characterID;
+	}
+
+	public void setCharacterID(int characterID) {
+		this.characterID = characterID;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public Set<Category> getCategories() {
+		return categories;
+	}
+
+	public void setCategories(Set<Category> categories) {
+		this.categories = categories;
+	}
 }

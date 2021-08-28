@@ -22,7 +22,8 @@ public class UploadImageServiceImpl implements UploadImageService {
     public String upload(String file) {
         String fileName = UUID.randomUUID().toString();
         try {
-            FileCopyUtils.copy(Base64Utils.decodeFromString(file.split(",")[1]),
+            System.out.println(file.split(",").length);
+            FileCopyUtils.copy(Base64Utils.decodeFromString(file.split(",")[file.split(",").length - 1]),
                     new File(this.fileUpload + fileName));
             return DriveAPIUtils.upload(new File(fileUpload + fileName));
         } catch (IOException | GeneralSecurityException e) {
