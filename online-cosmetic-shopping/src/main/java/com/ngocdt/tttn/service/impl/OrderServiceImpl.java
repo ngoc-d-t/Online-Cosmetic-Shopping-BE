@@ -1,5 +1,6 @@
 package com.ngocdt.tttn.service.impl;
 
+import com.ngocdt.tttn.dto.EmployeeDTO;
 import com.ngocdt.tttn.dto.OrderDTO;
 import com.ngocdt.tttn.dto.OrderDetailDTO;
 import com.ngocdt.tttn.dto.ProductDTO;
@@ -15,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,10 +29,13 @@ public class OrderServiceImpl implements OrderService {
     private final ProductRepository productRepo;
     private final ProductPriceRepository productPriceRepo;
     private final DiscountDetailRepository discountDetailRepo;
+    private final EmployeeRepository employeeRepo;
 
     @Override
     public List<OrderDTO> showAll() {
-        return orderRepo.findAll().stream().map(OrderDTO::toDTO).collect(Collectors.toList());
+        List<OrderDTO> result = orderRepo.findAll().stream().map(OrderDTO::toDTO).collect(Collectors.toList());
+        Collections.reverse(result);
+        return result;
     }
 
     @Override
@@ -66,18 +70,17 @@ public class OrderServiceImpl implements OrderService {
             if (detail.getQuantity() > product.getQuantity())
                 throw new BadRequestException("Product is not enough.");
             DiscountDetail discountDetails = discountDetailRepo
-                    .findTopByProduct_ProductIDAndDiscount_StartTimeLessThanEqualAndDiscount_EndTimeGreaterThanEqual(
-                            detail.getProduct().getProductID(), new Date(), new Date()).orElse(null);
+                    .findByProduct(detail.getProduct().getProductID()).orElse(null);
             float discount = 0;
-            List<ProductPrice> productPrice = productPriceRepo
-                    .findByProduct_ProductIDAndAndDateIsLessThanEqual(detail.getProduct().getProductID(), new Date());
-            float price = productPrice.get(productPrice.size() - 1).getPrice();
+            ProductPrice productPrice = productPriceRepo
+                    .findByProduct(detail.getProduct().getProductID());
+            float price = productPrice.getPrice();
             if (discountDetails != null) {
                 discount = discountDetails.getDiscountPercent();
-                totalDiscount += discountDetails.getDiscountPercent() * price * detail.getQuantity();
+                totalDiscount += (price * detail.getQuantity()) * (discountDetails.getDiscountPercent() / 100f);
             }
             detail.setPrice(price);
-            detail.setDiscount(discount);
+            detail.setDiscount(totalDiscount);
             detail.setOrderID(order.getOrderID());
             detail.setProduct(ProductDTO.toDTO(product));
             details.add(OrderDetailDTO.toEntity(createDetail(detail)));
@@ -141,4 +144,36 @@ public class OrderServiceImpl implements OrderService {
         orderRepo.save(order);
     }
 
+    @Override
+    public void canceled(Integer id) {
+        Order order = orderRepo.findById(id).orElseThrow(() -> new NotFoundException("Order not found"));
+        if (order.getState() == OrderState.CANCELED || order.getState() == OrderState.DELIVERED)
+            throw new BadRequestException("Can not change state");
+        order.setState(OrderState.CANCELED);
+        orderRepo.save(order);
+    }
+
+    @Override
+    public OrderDTO update(OrderDTO dto, Employee employee) {
+        if (employee == null)
+            throw new BadRequestException("Employee is not exist.");
+        Order order = orderRepo.findById(dto.getOrderID()).get();
+        if (order == null)
+            throw new BadRequestException("Order is not exist.");
+        order.setShipper(EmployeeDTO.toEntity(dto.getShipper()));
+        return OrderDTO.toDTO(orderRepo.save(order));
+    }
+
+    @Override
+    public List<OrderDTO> showAllByUser(int accountID) {
+        Account account = accountRepo.findById(accountID).get();
+        if (account == null)
+            throw new BadRequestException("Account is not exists.");
+        if (account.getCustomer() == null)
+            throw new BadRequestException("Customer is not exists.");
+        List<OrderDTO> result= orderRepo.findAllByCustomer_CustomerID(account.getCustomer().getCustomerID())
+                .stream().map(OrderDTO::toDTO).collect(Collectors.toList());
+        Collections.reverse(result);
+        return result;
+    }
 }

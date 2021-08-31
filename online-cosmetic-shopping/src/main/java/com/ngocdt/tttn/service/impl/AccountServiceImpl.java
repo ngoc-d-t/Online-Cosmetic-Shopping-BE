@@ -63,10 +63,8 @@ public class AccountServiceImpl implements AccountService{
     }
 
     @Override
-    public String showUserName(Account account) {
-        if(account == null)
-            throw new BadRequestException("Account is empty.");
-        Account acc = accountRepo.findByAccountID(account.getAccountID()).get();
+    public String showUserName(Integer id) {
+        Account acc = accountRepo.findById(id).get();
         if(acc.getCustomer() != null)
             return acc.getCustomer().getFullname();
         else if(acc.getEmployee() != null)

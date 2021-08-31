@@ -14,7 +14,7 @@ import javax.persistence.*;
 public class DiscountDetailDTO {
     private int productID;
     private int discountID;
-    private float discountPercent;
+    private int discountPercent;
 
     public static DiscountDetailDTO toDTO(DiscountDetail dd){
         if(dd == null)
@@ -51,11 +51,11 @@ public class DiscountDetailDTO {
         this.discountID = discountID;
     }
 
-    public float getDiscountPercent() {
+    public int getDiscountPercent() {
         return discountPercent;
     }
 
-    public void setDiscountPercent(float discountPercent) {
+    public void setDiscountPercent(int discountPercent) {
         this.discountPercent = discountPercent;
     }
 }

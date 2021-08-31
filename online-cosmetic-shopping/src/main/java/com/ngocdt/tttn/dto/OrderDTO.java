@@ -21,6 +21,7 @@ public class OrderDTO {
     private float totalDiscount;
     private int customerID;
     private int employeeID;
+    private EmployeeDTO shipper;
     private AddressDTO address;
     private float paid;
     private OrderState state ;
@@ -49,6 +50,7 @@ public class OrderDTO {
             detailDTOS.add(OrderDetailDTO.toDTO(detail));
         }
         dto.setCustomerID(order.getCustomer().getCustomerID());
+        dto.setShipper(EmployeeDTO.toDTO(order.getShipper()));
         dto.setOrderDetails(detailDTOS);
         return dto;
     }
@@ -139,5 +141,13 @@ public class OrderDTO {
 
     public void setTransportationFee(float transportationFee) {
         this.transportationFee = transportationFee;
+    }
+
+    public EmployeeDTO getShipper() {
+        return shipper;
+    }
+
+    public void setShipper(EmployeeDTO shipper) {
+        this.shipper = shipper;
     }
 }

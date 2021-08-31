@@ -31,7 +31,7 @@ public class DiscountDetail {
 	private Product product;
 	
 	@Column
-	private float discountPercent;
+	private int discountPercent;
 
 	public int getProductID() {
 		return productID;
@@ -65,11 +65,11 @@ public class DiscountDetail {
 		this.product = product;
 	}
 
-	public float getDiscountPercent() {
+	public int getDiscountPercent() {
 		return discountPercent;
 	}
 
-	public void setDiscountPercent(float discountPercent) {
+	public void setDiscountPercent(int discountPercent) {
 		this.discountPercent = discountPercent;
 	}
 }

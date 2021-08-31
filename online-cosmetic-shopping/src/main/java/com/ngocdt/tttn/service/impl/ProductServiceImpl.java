@@ -47,14 +47,13 @@ public class ProductServiceImpl implements ProductService {
         List<ProductDTO> productDTOSs = productRepo.findAll().stream().map(e -> {
             ProductDTO dto = ProductDTO.toDTO(e);
             DiscountDetail discountDetail = discountDetailRepo
-                    .findTopByProduct_ProductIDAndDiscount_StartTimeLessThanEqualAndDiscount_EndTimeGreaterThanEqual(
-                            dto.getProductID(), new Date(), new Date()).orElse(null);
+                    .findByProduct(dto.getProductID()).orElse(null);
             if (discountDetail != null) {
                 dto.setDiscountPercent(discountDetail.getDiscountPercent());
             }
-            List<ProductPrice> productPrice = productPriceRepo
-                    .findByProduct_ProductIDAndAndDateIsLessThanEqual(e.getProductID(), new Date());
-            dto.setPrice(productPrice.get(productPrice.size() - 1).getPrice());
+            ProductPrice productPrice = productPriceRepo
+                    .findByProduct(e.getProductID());
+            dto.setPrice(productPrice.getPrice());
             return dto;
         }).collect(Collectors.toList());
         return productDTOSs;
@@ -64,14 +63,14 @@ public class ProductServiceImpl implements ProductService {
     public ProductDTO showOne(Integer id) {
         ProductDTO dto = ProductDTO.toDTO(productRepo.findById(id).orElse(null));
         DiscountDetail discountDetail = discountDetailRepo
-                .findTopByProduct_ProductIDAndDiscount_StartTimeLessThanEqualAndDiscount_EndTimeGreaterThanEqual(
-                        dto.getProductID(), new Date(), new Date()).orElse(null);
+                .findByProduct(
+                        dto.getProductID()).orElse(null);
         if (discountDetail != null) {
             dto.setDiscountPercent(discountDetail.getDiscountPercent());
         }
-        List<ProductPrice> productPrice = productPriceRepo
-                .findByProduct_ProductIDAndAndDateIsLessThanEqual(id, new Date());
-        dto.setPrice(productPrice.get(productPrice.size() - 1).getPrice());
+        ProductPrice productPrice = productPriceRepo
+                .findByProduct(id);
+        dto.setPrice(productPrice.getPrice());
 
         return dto;
     }
@@ -153,8 +152,8 @@ public class ProductServiceImpl implements ProductService {
         return productRepo.findByCategory_CategoryID(categoryID).stream().map(e -> {
             ProductDTO dto = ProductDTO.toDTO(e);
             DiscountDetail discountDetail = discountDetailRepo
-                    .findTopByProduct_ProductIDAndDiscount_StartTimeLessThanEqualAndDiscount_EndTimeGreaterThanEqual(
-                            dto.getProductID(), new Date(), new Date()).orElse(null);
+                    .findByProduct(
+                            dto.getProductID()).orElse(null);
             if (discountDetail != null) {
                 dto.setDiscountPercent(discountDetail.getDiscountPercent());
             }
@@ -172,8 +171,8 @@ public class ProductServiceImpl implements ProductService {
                 .map(e -> {
                     ProductDTO dto = ProductDTO.toDTO(e);
                     DiscountDetail discountDetail = discountDetailRepo
-                            .findTopByProduct_ProductIDAndDiscount_StartTimeLessThanEqualAndDiscount_EndTimeGreaterThanEqual(
-                                    dto.getProductID(), new Date(), new Date()).orElse(null);
+                            .findByProduct(
+                                    dto.getProductID()).orElse(null);
                     if (discountDetail != null) {
                         dto.setDiscountPercent(discountDetail.getDiscountPercent());
                     }
@@ -189,8 +188,8 @@ public class ProductServiceImpl implements ProductService {
         return productRepo.findByNameLike("%" + value + "%").stream().map(e -> {
             ProductDTO dto = ProductDTO.toDTO(e);
             DiscountDetail discountDetail = discountDetailRepo
-                    .findTopByProduct_ProductIDAndDiscount_StartTimeLessThanEqualAndDiscount_EndTimeGreaterThanEqual(
-                            dto.getProductID(), new Date(), new Date()).orElse(null);
+                    .findByProduct(
+                            dto.getProductID()).orElse(null);
             if (discountDetail != null) {
                 dto.setDiscountPercent(discountDetail.getDiscountPercent());
             }

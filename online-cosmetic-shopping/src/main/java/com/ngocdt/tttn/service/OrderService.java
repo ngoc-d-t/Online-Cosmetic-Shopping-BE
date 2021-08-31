@@ -2,6 +2,7 @@ package com.ngocdt.tttn.service;
 
 import com.ngocdt.tttn.dto.OrderDTO;
 import com.ngocdt.tttn.dto.OrderDetailDTO;
+import com.ngocdt.tttn.entity.Employee;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -22,4 +23,10 @@ public interface OrderService {
     void delivering(Integer id);
 
     void delivered(Integer id);
+
+    OrderDTO update(OrderDTO dto, Employee employee);
+
+    void canceled(Integer id);
+
+    List<OrderDTO> showAllByUser(int accountID);
 }

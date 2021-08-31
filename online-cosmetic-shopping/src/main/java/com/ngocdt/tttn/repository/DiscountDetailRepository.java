@@ -6,11 +6,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 public interface DiscountDetailRepository extends JpaRepository<DiscountDetail, DiscountDetailKey> {
-    Optional<DiscountDetail> findTopByProduct_ProductIDAndDiscount_StartTimeLessThanEqualAndDiscount_EndTimeGreaterThanEqual(int productID
-            , Date startDate, Date endDate);
+    @Query(value = "select a.discountID, a.discountPercent, a.productID from (select * from DiscountDetail dd " +
+            "where dd.productID = :id) a inner join (select d.discountID from Discount d " +
+            "where d.startTime <= CAST(getdate() as date) and d.endTime >= CAST(getdate() as date)) b " +
+            "on a.discountID = b.discountID", nativeQuery = true)
+    Optional<DiscountDetail> findByProduct(@Param("id") int productID);
 }

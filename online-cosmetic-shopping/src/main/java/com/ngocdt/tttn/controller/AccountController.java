@@ -32,9 +32,7 @@ public class AccountController {
     public ResponseEntity<String> getUsername(){
         UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
-        Account account = new Account();
-        account.setAccountID(userDetails.getAccountID());
-        return ResponseEntity.ok().body(accountService.showUserName(account));
+        return ResponseEntity.ok().body(accountService.showUserName(userDetails.getAccountID()));
     }
 
 }

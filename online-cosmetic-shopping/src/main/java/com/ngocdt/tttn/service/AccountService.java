@@ -11,5 +11,5 @@ public interface AccountService{
     AccountDTO update(AccountDTO dto,HttpServletRequest request);
     AccountDTO create(AccountDTO dto);
     void delete(HttpServletRequest request);
-    String showUserName(Account account);
+    String showUserName(Integer id);
 }
