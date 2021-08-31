@@ -3,6 +3,7 @@ package com.ngocdt.tttn.controller;
 
 import com.ngocdt.tttn.dto.OrderDTO;
 import com.ngocdt.tttn.enums.OrderState;
+import com.ngocdt.tttn.exception.BadRequestException;
 import com.ngocdt.tttn.security.service.UserDetailsImpl;
 import com.ngocdt.tttn.service.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -29,12 +30,28 @@ public class OrderController {
     public ResponseEntity<OrderDTO> showOne(@PathVariable("id") Integer id) {
         return ResponseEntity.ok().body(orderService.showOne(id));
     }
+
     @GetMapping("/user/orders")
-    public ResponseEntity<List<OrderDTO>> showByAllByUser() {
+    public ResponseEntity<List<OrderDTO>> showByAllByUser(
+            @RequestParam(value = "state", required = false, defaultValue = "") OrderState state) {
         UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
+        if (state != null && !state.toString().isEmpty()) {
+            return ResponseEntity.ok().body(orderService.showAllByUserAndState(state, userDetails.getAccountID()));
+        }
         return ResponseEntity.ok().body(orderService.showAllByUser(userDetails.getAccountID()));
     }
+
+    @PatchMapping("/user/orders/{id}")
+    public ResponseEntity<Void> requestChangeState(@PathVariable("id") Integer id) {
+        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
+                .getPrincipal();
+        if (userDetails.getCustomer() == null)
+            throw new BadRequestException("Account is wrong");
+        orderService.requestCanceled(id, userDetails.getCustomer().getCustomerID());
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping("/public/orders/create")
     public ResponseEntity<OrderDTO> create(@RequestBody OrderDTO dto, HttpServletRequest request) {
         return ResponseEntity.ok().body(orderService.create(dto, request));
@@ -52,7 +69,7 @@ public class OrderController {
         } else if (state == OrderState.DELIVERED) {
             orderService.delivered(id);
             return ResponseEntity.ok().build();
-        }else if(state == OrderState.CANCELED){
+        } else if (state == OrderState.CANCELED) {
             orderService.canceled(id);
             return ResponseEntity.ok().build();
         }
@@ -64,10 +81,11 @@ public class OrderController {
         orderService.delete(id);
         return ResponseEntity.ok().build();
     }
+
     @PutMapping("/admin/orders")
-    public ResponseEntity<OrderDTO> update(@RequestBody OrderDTO dto){
+    public ResponseEntity<OrderDTO> update(@RequestBody OrderDTO dto) {
         UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
-        return ResponseEntity.ok().body(orderService.update(dto,userDetails.getEmployee()));
+        return ResponseEntity.ok().body(orderService.update(dto, userDetails.getEmployee()));
     }
 }

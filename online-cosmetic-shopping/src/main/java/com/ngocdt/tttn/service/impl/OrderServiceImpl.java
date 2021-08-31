@@ -151,6 +151,13 @@ public class OrderServiceImpl implements OrderService {
             throw new BadRequestException("Can not change state");
         order.setState(OrderState.CANCELED);
         orderRepo.save(order);
+        List<OrderDetail> orderDetails = orderDetailRepo.findAllByOrder_OrderID(order.getOrderID());
+        for (OrderDetail od : orderDetails
+        ) {
+            Product p = productRepo.findById(od.getProduct().getProductID()).get();
+            p.setQuantity(p.getQuantity() + od.getQuantity());
+            productRepo.save(p);
+        }
     }
 
     @Override
@@ -171,7 +178,39 @@ public class OrderServiceImpl implements OrderService {
             throw new BadRequestException("Account is not exists.");
         if (account.getCustomer() == null)
             throw new BadRequestException("Customer is not exists.");
-        List<OrderDTO> result= orderRepo.findAllByCustomer_CustomerID(account.getCustomer().getCustomerID())
+        List<OrderDTO> result = orderRepo.findAllByCustomer_CustomerID(account.getCustomer().getCustomerID())
+                .stream().map(OrderDTO::toDTO).collect(Collectors.toList());
+        Collections.reverse(result);
+        return result;
+    }
+
+    @Override
+    @Transactional
+    public void requestCanceled(Integer id, int customerID) {
+        Order order = orderRepo.findById(id).orElseThrow(() -> new NotFoundException("Order not found"));
+        if (order.getState() != OrderState.UNCONFIRMED)
+            throw new BadRequestException("Can not change state");
+        if (order.getCustomer().getCustomerID() != customerID)
+            throw new BadRequestException("Can not change state");
+        order.setState(OrderState.CANCELED);
+        orderRepo.save(order);
+        List<OrderDetail> orderDetails = orderDetailRepo.findAllByOrder_OrderID(order.getOrderID());
+        for (OrderDetail od : orderDetails
+        ) {
+            Product p = productRepo.findById(od.getProduct().getProductID()).get();
+            p.setQuantity(p.getQuantity() + od.getQuantity());
+            productRepo.save(p);
+        }
+    }
+
+    @Override
+    public List<OrderDTO> showAllByUserAndState(OrderState state, int accountID) {
+        Account account = accountRepo.findById(accountID).get();
+        if (account == null)
+            throw new BadRequestException("Account is not exists.");
+        if (account.getCustomer() == null)
+            throw new BadRequestException("Customer is not exists.");
+        List<OrderDTO> result = orderRepo.findAllByCustomer_CustomerIDAndAndState(account.getCustomer().getCustomerID(), state)
                 .stream().map(OrderDTO::toDTO).collect(Collectors.toList());
         Collections.reverse(result);
         return result;
