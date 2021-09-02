@@ -18,4 +18,20 @@ public class DiscountDetailKeyDTO {
         key.setProductID(dto.getProductID());
         return key;
     }
+
+    public int getDiscountID() {
+        return discountID;
+    }
+
+    public void setDiscountID(int discountID) {
+        this.discountID = discountID;
+    }
+
+    public int getProductID() {
+        return productID;
+    }
+
+    public void setProductID(int productID) {
+        this.productID = productID;
+    }
 }

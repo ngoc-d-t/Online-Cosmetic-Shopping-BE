@@ -20,7 +20,7 @@ public class Employee {
     private int employeeID;
 
     @Column
-    private String name;
+    private String fullname;
 
     @Column
     private String address;
@@ -45,12 +45,12 @@ public class Employee {
         this.employeeID = employeeID;
     }
 
-    public String getName() {
-        return name;
+    public String getFullname() {
+        return fullname;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFullname(String fullname) {
+        this.fullname = fullname;
     }
 
     public String getAddress() {

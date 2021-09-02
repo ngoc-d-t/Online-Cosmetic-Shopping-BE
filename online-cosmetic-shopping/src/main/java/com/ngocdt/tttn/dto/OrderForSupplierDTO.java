@@ -16,7 +16,7 @@ import java.util.List;
 @Setter
 public class OrderForSupplierDTO {
     private int orderForSupplierID;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd")
     private Date date;
     private long totalPayment;
     private int employeeID;
@@ -29,7 +29,7 @@ public class OrderForSupplierDTO {
         OrderForSupplierDTO dto = new OrderForSupplierDTO();
         dto.setOrderForSupplierID(od.getOrderForSupplierID());
         dto.setDate(od.getDate());
-        dto.setTotalPayment(od.getTotalPayment());
+        dto.setTotalPayment(od.getTotalPrice());
 
         dto.setEmployeeID(od.getEmployee().getEmployeeID());
         dto.setSupplierID(od.getSupplier().getSupplierID());
@@ -51,7 +51,7 @@ public class OrderForSupplierDTO {
         OrderForSupplier od = new OrderForSupplier();
         od.setOrderForSupplierID(dto.getOrderForSupplierID());
         od.setDate(dto.getDate());
-        od.setTotalPayment(dto.getTotalPayment());
+        od.setTotalPrice(dto.getTotalPayment());
 
         Employee employee = new Employee();
         employee.setEmployeeID(dto.getEmployeeID());

@@ -18,12 +18,12 @@ import java.util.List;
 public class DiscountDTO {
     private int discountID;
     private String name;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd")
     private Date startTime;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd")
     private Date endTime;
     private List<DiscountDetailDTO> discountDetails;
-    private int employeeID;
+
     public static DiscountDTO toDTO(Discount discount) {
         if (discount == null)
             return null;
@@ -32,7 +32,6 @@ public class DiscountDTO {
         dto.setName(discount.getName());
         dto.setStartTime(discount.getStartTime());
         dto.setEndTime(discount.getEndTime());
-        dto.setEmployeeID(discount.getEmployee().getEmployeeID());
         List<DiscountDetailDTO> discountDetails = new ArrayList<>();
         for (DiscountDetail detail : discount.getDiscountDetails()
         ) {
@@ -52,23 +51,12 @@ public class DiscountDTO {
         discount.setStartTime(dto.getStartTime());
         discount.setEndTime(dto.getEndTime());
         Employee employee = new Employee();
-        employee.setEmployeeID(dto.getEmployeeID());
-        discount.setEmployee(employee);
         List<DiscountDetail> discountDetails = new ArrayList<>();
-        for (DiscountDetailDTO detail : dto.getDiscountDetails()
-        ) {
+        for (DiscountDetailDTO detail : dto.getDiscountDetails()) {
             discountDetails.add(DiscountDetailDTO.toEntity(detail));
         }
         discount.setDiscountDetails(discountDetails);
         return discount;
-    }
-
-    public int getEmployeeID() {
-        return employeeID;
-    }
-
-    public void setEmployeeID(int employeeID) {
-        this.employeeID = employeeID;
     }
 
     public int getDiscountID() {

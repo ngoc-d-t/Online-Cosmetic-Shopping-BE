@@ -68,7 +68,7 @@ public class AccountServiceImpl implements AccountService{
         if(acc.getCustomer() != null)
             return acc.getCustomer().getFullname();
         else if(acc.getEmployee() != null)
-            return acc.getEmployee().getName();
+            return acc.getEmployee().getFullname();
         return "";
     }
 

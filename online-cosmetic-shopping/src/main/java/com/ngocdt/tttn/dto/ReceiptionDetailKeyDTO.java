@@ -18,4 +18,20 @@ public class ReceiptionDetailKeyDTO {
         key.setReceiptionID(dto.getReceiptionID());
         return key;
     }
+
+    public int getProductID() {
+        return productID;
+    }
+
+    public void setProductID(int productID) {
+        this.productID = productID;
+    }
+
+    public int getReceiptionID() {
+        return receiptionID;
+    }
+
+    public void setReceiptionID(int receiptionID) {
+        this.receiptionID = receiptionID;
+    }
 }

@@ -35,4 +35,52 @@ public class ReceiptionDetail {
     @MapsId("receiptionID")
     @JoinColumn(name = "receiptionID")
     private Receiption receiption;
+
+    public int getProductID() {
+        return productID;
+    }
+
+    public void setProductID(int productID) {
+        this.productID = productID;
+    }
+
+    public int getReceiptionID() {
+        return receiptionID;
+    }
+
+    public void setReceiptionID(int receiptionID) {
+        this.receiptionID = receiptionID;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public float getPrice() {
+        return price;
+    }
+
+    public void setPrice(float price) {
+        this.price = price;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
+    public Receiption getReceiption() {
+        return receiption;
+    }
+
+    public void setReceiption(Receiption receiption) {
+        this.receiption = receiption;
+    }
 }

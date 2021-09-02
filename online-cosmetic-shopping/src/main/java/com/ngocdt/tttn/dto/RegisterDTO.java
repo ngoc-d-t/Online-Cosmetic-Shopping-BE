@@ -1,17 +1,13 @@
 package com.ngocdt.tttn.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ngocdt.tttn.entity.Account;
 import com.ngocdt.tttn.entity.Address;
 import com.ngocdt.tttn.entity.Customer;
-import com.ngocdt.tttn.entity.Role;
-import com.ngocdt.tttn.enums.ROLE;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
-import javax.persistence.Column;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -48,7 +44,7 @@ public class RegisterDTO {
         List<Address> addresses = new ArrayList<>();
         Address address = new Address();
         address.setPhoneNumber(dto.getPhoneNumber());
-        address.setReceiverName(dto.getFullname());
+        address.setName(dto.getFullname());
         address.setAddress(dto.getAddress());
 
         addresses.add(address);

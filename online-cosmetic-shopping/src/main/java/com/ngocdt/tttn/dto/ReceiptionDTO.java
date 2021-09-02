@@ -17,7 +17,7 @@ import java.util.List;
 @Setter
 public class ReceiptionDTO {
     private int receiptionID;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd")
     private Date date;
     private long totalPayment;
     private int employeeID;
@@ -29,7 +29,7 @@ public class ReceiptionDTO {
         ReceiptionDTO dto = new ReceiptionDTO();
         dto.setReceiptionID(receiption.getReceiptionID());
         dto.setDate(receiption.getDate());
-        dto.setTotalPayment(receiption.getTotalPayment());
+        dto.setTotalPayment(receiption.getTotalPrice());
         dto.setEmployeeID(receiption.getEmployee().getEmployeeID());
         dto.setOrderForSupplierID(receiption.getOrderForSupplier().getOrderForSupplierID());
         if(receiption.getReceiptionDetails() == null)
@@ -49,7 +49,7 @@ public class ReceiptionDTO {
         Receiption receiption = new Receiption();
         receiption.setReceiptionID(dto.getReceiptionID());
         receiption.setDate(dto.getDate());
-        receiption.setTotalPayment(dto.getTotalPayment());
+        receiption.setTotalPrice(dto.getTotalPayment());
 
         Employee employee = new Employee();
         employee.setEmployeeID(dto.getEmployeeID());
@@ -68,5 +68,53 @@ public class ReceiptionDTO {
         }
         receiption.setReceiptionDetails(details);
         return receiption;
+    }
+
+    public int getReceiptionID() {
+        return receiptionID;
+    }
+
+    public void setReceiptionID(int receiptionID) {
+        this.receiptionID = receiptionID;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public long getTotalPayment() {
+        return totalPayment;
+    }
+
+    public void setTotalPayment(long totalPayment) {
+        this.totalPayment = totalPayment;
+    }
+
+    public int getEmployeeID() {
+        return employeeID;
+    }
+
+    public void setEmployeeID(int employeeID) {
+        this.employeeID = employeeID;
+    }
+
+    public int getOrderForSupplierID() {
+        return orderForSupplierID;
+    }
+
+    public void setOrderForSupplierID(int orderForSupplierID) {
+        this.orderForSupplierID = orderForSupplierID;
+    }
+
+    public List<ReceiptionDetailDTO> getReceiptionDetails() {
+        return receiptionDetails;
+    }
+
+    public void setReceiptionDetails(List<ReceiptionDetailDTO> receiptionDetails) {
+        this.receiptionDetails = receiptionDetails;
     }
 }

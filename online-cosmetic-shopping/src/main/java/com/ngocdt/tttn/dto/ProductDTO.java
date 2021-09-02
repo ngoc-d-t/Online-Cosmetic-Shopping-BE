@@ -21,12 +21,11 @@ public class ProductDTO {
     private String description;
     private Integer categoryID;
     private float price;
-    private int employeeID;
     private float discountPercent;
     private String volumn;
     @NotBlank(message = "Can not be empty.")
     private String image;
-
+    private int supplierID;
     public String getImage() {
         return image;
     }
@@ -45,13 +44,13 @@ public class ProductDTO {
         dto.setBranchOrigin(pro.getBranchOrigin());
         dto.setWhereProduction(pro.getWhereProduction());
         dto.setQuantity(pro.getQuantity());
-        dto.setDirection(pro.getDirection());
         dto.setDescription(pro.getDescription());
         dto.setImage(pro.getImage());
         dto.setCategoryID(pro.getCategory().getCategoryID());
         dto.setVolumn(pro.getVolumn());
-        dto.setEmployeeID(pro.getEmployee().getEmployeeID());
-
+        if(pro.getSupplier() == null)
+            return dto;
+        dto.setSupplierID(pro.getSupplier().getSupplierID());
         return dto;
     }
 
@@ -65,26 +64,20 @@ public class ProductDTO {
         pro.setBranchOrigin(dto.getBranchOrigin());
         pro.setWhereProduction(dto.getWhereProduction());
         pro.setQuantity(dto.getQuantity());
-        pro.setDirection(dto.getDirection());
         pro.setDescription(dto.getDescription());
         pro.setVolumn(dto.getVolumn());
         Category category = new Category();
         category.setCategoryID(dto.getCategoryID());
         pro.setCategory(category);
-
-        Employee employee = new Employee();
-        employee.setEmployeeID(dto.getEmployeeID());
-        pro.setEmployee(employee);
-
         return pro;
     }
 
-    public int getEmployeeID() {
-        return employeeID;
+    public int getSupplierID() {
+        return supplierID;
     }
 
-    public void setEmployeeID(int employeeID) {
-        this.employeeID = employeeID;
+    public void setSupplierID(int supplierID) {
+        this.supplierID = supplierID;
     }
 
     public int getProductID() {

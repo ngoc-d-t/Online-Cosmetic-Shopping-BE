@@ -49,7 +49,7 @@ public class OrderForSupplierServiceImpl implements OrderForSupplierService {
         }
         OrderForSupplier od = OrderForSupplierDTO.toEntity(dto);
         od.setOrderDetailForSuppliers(responDetails);
-        od.setTotalPayment(orderDetailForSupplierRepo.sumPaymentByOrderForSupplierID(od.getOrderForSupplierID()));
+        od.setTotalPrice(orderDetailForSupplierRepo.sumPaymentByOrderForSupplierID(od.getOrderForSupplierID()));
         return OrderForSupplierDTO.toDTO(orderForSupplierRepo.save(od));
     }
 
@@ -74,7 +74,7 @@ public class OrderForSupplierServiceImpl implements OrderForSupplierService {
         long totalPayment = orderDetailForSupplierRepo.sumPaymentByOrderForSupplierID(responDTO.getOrderForSupplierID());
         responDTO.setOrderDetailForSuppliers(responDetails);
         od = OrderForSupplierDTO.toEntity(responDTO);
-        od.setTotalPayment(totalPayment);
+        od.setTotalPrice(totalPayment);
         return OrderForSupplierDTO.toDTO(orderForSupplierRepo.save(od));
     }
 

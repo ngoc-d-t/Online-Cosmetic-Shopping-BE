@@ -19,7 +19,7 @@ public interface OrderService {
 
     OrderDetailDTO createDetail(OrderDetailDTO dto);
 
-    void confirm(Integer id);
+    void confirm(Integer id, Integer employeeID);
 
     void delivering(Integer id);
 
@@ -35,4 +35,5 @@ public interface OrderService {
 
     List<OrderDTO> showAllByUserAndState(OrderState state, int accountID);
 
+    List<OrderDTO> showAllByShipper(Integer id);
 }

@@ -1,16 +1,9 @@
 package com.ngocdt.tttn.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ngocdt.tttn.entity.Account;
-import com.ngocdt.tttn.entity.Customer;
-import com.ngocdt.tttn.enums.ROLE;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotBlank;
-
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 
 public class AccountDTO {
     private int accountID;
@@ -21,6 +14,7 @@ public class AccountDTO {
     private String password;
     private EmployeeDTO employee;
     private CustomerDTO customer;
+    private String role;
 
     public static Account toEntity(AccountDTO dto) {
         if (dto == null)
@@ -40,6 +34,8 @@ public class AccountDTO {
         dto.setPassword(account.getPassword());
         dto.setEmployee(EmployeeDTO.toDTO(account.getEmployee()));
         dto.setCustomer(CustomerDTO.toDTO(account.getCustomer()));
+        if (account.getRole() != null)
+            dto.setRole(account.getRole().getRoleName().toString());
         return dto;
     }
 
@@ -81,5 +77,13 @@ public class AccountDTO {
 
     public void setCustomer(CustomerDTO customer) {
         this.customer = customer;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }

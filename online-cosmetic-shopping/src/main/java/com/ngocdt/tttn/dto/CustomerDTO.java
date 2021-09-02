@@ -19,7 +19,7 @@ public class CustomerDTO {
     private int customerID;
     @NotBlank(message = "can not be empty.")
     private String fullname;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd")
     private Date birthday;
     private int sex;
     private List<AddressDTO> addresses;

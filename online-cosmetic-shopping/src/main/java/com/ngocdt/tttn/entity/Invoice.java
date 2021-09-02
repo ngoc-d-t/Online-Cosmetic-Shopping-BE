@@ -19,7 +19,7 @@ public class Invoice {
 	private int invoiceID;
 	
 	@Column
-	private String taxCode;
+	private int taxCode;
 	
 	@Column
 	private Date date;
@@ -32,6 +32,7 @@ public class Invoice {
 	@JoinColumn(name="employeeID",nullable=false)
 	private Employee employee;
 
+
 	public int getInvoiceID() {
 		return invoiceID;
 	}
@@ -40,11 +41,11 @@ public class Invoice {
 		this.invoiceID = invoiceID;
 	}
 
-	public String getTaxCode() {
+	public int getTaxCode() {
 		return taxCode;
 	}
 
-	public void setTaxCode(String taxCode) {
+	public void setTaxCode(int taxCode) {
 		this.taxCode = taxCode;
 	}
 

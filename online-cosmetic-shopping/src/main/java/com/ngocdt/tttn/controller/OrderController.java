@@ -3,6 +3,7 @@ package com.ngocdt.tttn.controller;
 
 import com.ngocdt.tttn.dto.OrderDTO;
 import com.ngocdt.tttn.enums.OrderState;
+import com.ngocdt.tttn.enums.ROLE;
 import com.ngocdt.tttn.exception.BadRequestException;
 import com.ngocdt.tttn.security.service.UserDetailsImpl;
 import com.ngocdt.tttn.service.OrderService;
@@ -24,6 +25,15 @@ public class OrderController {
     @GetMapping("/admin/orders")
     public ResponseEntity<List<OrderDTO>> showAll() {
         return ResponseEntity.ok().body(orderService.showAll());
+    }
+
+    @GetMapping("/shipper/orders")
+    public ResponseEntity<List<OrderDTO>> showAllByShipper() {
+        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
+                .getPrincipal();
+        if (userDetails.getRole().getRoleName().equals(ROLE.ROLE_SHIPPER))
+            return ResponseEntity.ok().body(orderService.showAllByShipper(userDetails.getEmployee().getEmployeeID()));
+        return ResponseEntity.badRequest().build();
     }
 
     @GetMapping("/user/orders/{id}")
@@ -60,8 +70,13 @@ public class OrderController {
     @PatchMapping("/admin/orders/{id}/{state}")
     public ResponseEntity<Void> changeState(@PathVariable("id") Integer id,
                                             @PathVariable("state") OrderState state) {
+
         if (state == OrderState.CONFIRMED) {
-            orderService.confirm(id);
+            UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
+                    .getPrincipal();
+            if (userDetails.getEmployee() == null)
+                throw new BadRequestException("Employee is not exist.");
+            orderService.confirm(id, userDetails.getEmployee().getEmployeeID());
             return ResponseEntity.ok().build();
         } else if (state == OrderState.DELIVERING) {
             orderService.delivering(id);

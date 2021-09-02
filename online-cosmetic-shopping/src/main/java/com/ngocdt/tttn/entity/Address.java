@@ -19,7 +19,7 @@ public class Address {
 	private String phoneNumber;
 	
 	@Column
-	private String receiverName;
+	private String name;
 
 	@Column
 	private String address;
@@ -44,12 +44,12 @@ public class Address {
 		this.phoneNumber = phoneNumber;
 	}
 
-	public String getReceiverName() {
-		return receiverName;
+	public String getName() {
+		return name;
 	}
 
-	public void setReceiverName(String receiverName) {
-		this.receiverName = receiverName;
+	public void setName(String receiverName) {
+		this.name = receiverName;
 	}
 
 	public String getAddress() {

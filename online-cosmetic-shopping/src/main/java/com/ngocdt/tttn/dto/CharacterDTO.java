@@ -31,4 +31,20 @@ public class CharacterDTO {
         chara.setDescription(dto.getDescription());
         return chara;
     }
+
+    public int getCharacterID() {
+        return characterID;
+    }
+
+    public void setCharacterID(int characterID) {
+        this.characterID = characterID;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 }

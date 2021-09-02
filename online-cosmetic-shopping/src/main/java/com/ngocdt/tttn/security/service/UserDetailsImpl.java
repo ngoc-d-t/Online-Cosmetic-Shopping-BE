@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ngocdt.tttn.entity.Account;
 import com.ngocdt.tttn.entity.Customer;
 import com.ngocdt.tttn.entity.Employee;
+import com.ngocdt.tttn.entity.Role;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,10 +23,10 @@ public class UserDetailsImpl implements UserDetails {
     private String password;
     private Employee employee;
     private Customer customer;
-
+    private Role role;
     private Collection<? extends GrantedAuthority> authorities;
 
-    public UserDetailsImpl(int accountID, String email, String password, Employee employee, Customer customer,
+    public UserDetailsImpl(int accountID, String email, String password, Employee employee, Customer customer,Role role,
                            Collection<? extends GrantedAuthority> authorities) {
         super();
         this.accountID = accountID;
@@ -34,17 +35,26 @@ public class UserDetailsImpl implements UserDetails {
         this.employee = employee;
         this.customer = customer;
         this.authorities = authorities;
+        this.role = role;
     }
 
     public static UserDetailsImpl build(Account account) {
         List<GrantedAuthority> authorities = Arrays.asList(new SimpleGrantedAuthority(account.getRole().getRoleName().name()));
         return new UserDetailsImpl(account.getAccountID(), account.getEmail(), account.getPassword(),
-                account.getEmployee(), account.getCustomer(), authorities);
+                account.getEmployee(), account.getCustomer(),account.getRole(), authorities);
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     public int getAccountID() {

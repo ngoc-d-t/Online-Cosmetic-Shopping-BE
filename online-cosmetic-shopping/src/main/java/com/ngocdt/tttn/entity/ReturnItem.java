@@ -23,7 +23,10 @@ public class ReturnItem {
 	
 	@Column
 	private Date date;
-	
+
+	@Column
+	private float totalPrice;
+
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "orderDetail_returnItem", joinColumns = { @JoinColumn(name = "returnItemID") }, inverseJoinColumns = {
 			@JoinColumn(name = "orderDetailID") })

@@ -26,6 +26,9 @@ public class Comment {
 	@Column(name="contents")
 	private String contents;
 
+	@Column
+	private int score;
+
 	@ManyToOne
 	@MapsId("productID")
 	@JoinColumn(name = "productID")

@@ -27,10 +27,6 @@ public class Discount {
 	@Column(nullable = false)
 	private Date endTime;
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "employeeID", nullable = false)
-	private Employee employee;
-
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "discount")
 	private List<DiscountDetail> discountDetails;
 
@@ -74,11 +70,4 @@ public class Discount {
 		this.discountDetails = discountDetails;
 	}
 
-	public Employee getEmployee() {
-		return employee;
-	}
-
-	public void setEmployee(Employee employee) {
-		this.employee = employee;
-	}
 }

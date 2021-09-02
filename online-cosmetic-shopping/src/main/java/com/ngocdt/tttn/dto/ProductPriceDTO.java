@@ -7,7 +7,7 @@ import java.util.Date;
 
 public class ProductPriceDTO {
     private int productID;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd")
     private Date date;
     private float price;
 

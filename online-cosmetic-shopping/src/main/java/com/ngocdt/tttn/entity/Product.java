@@ -33,9 +33,6 @@ public class Product {
 	
 	@Column
 	private int quantity;
-	
-	@Column
-	private String direction;
 
 	@Column
 	private String volumn;
@@ -43,24 +40,12 @@ public class Product {
 	@Column
 	private String image;
 
-	public String getImage() {
-		return image;
-	}
-
-	public void setImage(String image) {
-		this.image = image;
-	}
-
-	public String getVolumn() {
-		return volumn;
-	}
-
-	public void setVolumn(String volumn) {
-		this.volumn = volumn;
-	}
-
 	@Column(nullable=false)
 	private String description;
+
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "supplierID", nullable = false)
+	private Supplier supplier;
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "categoryID", nullable = false)
@@ -76,14 +61,6 @@ public class Product {
 	@OneToMany(fetch=FetchType.LAZY,mappedBy="product")
 	private List<Comment> comments = new ArrayList<>();
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "employeeID", nullable = false)
-	private Employee employee;
-
-	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "product_receiption", joinColumns = { @JoinColumn(name = "productID") }, inverseJoinColumns = {
-			@JoinColumn(name = "receiptionID") })
-	private Set<Receiption> receiptions = new HashSet<>();
 
 	public int getProductID() {
 		return productID;
@@ -125,14 +102,6 @@ public class Product {
 		this.quantity = quantity;
 	}
 
-	public String getDirection() {
-		return direction;
-	}
-
-	public void setDirection(String direction) {
-		this.direction = direction;
-	}
-
 	public String getDescription() {
 		return description;
 	}
@@ -165,14 +134,6 @@ public class Product {
 		this.comments = comments;
 	}
 
-	public Set<Receiption> getReceiptions() {
-		return receiptions;
-	}
-
-	public void setReceiptions(Set<Receiption> receiptions) {
-		this.receiptions = receiptions;
-	}
-
 	public List<ProductPrice> getProductPrices() {
 		return productPrices;
 	}
@@ -181,11 +142,27 @@ public class Product {
 		this.productPrices = productPrices;
 	}
 
-	public Employee getEmployee() {
-		return employee;
+	public String getImage() {
+		return image;
 	}
 
-	public void setEmployee(Employee employee) {
-		this.employee = employee;
+	public void setImage(String image) {
+		this.image = image;
+	}
+
+	public String getVolumn() {
+		return volumn;
+	}
+
+	public void setVolumn(String volumn) {
+		this.volumn = volumn;
+	}
+
+	public Supplier getSupplier() {
+		return supplier;
+	}
+
+	public void setSupplier(Supplier supplier) {
+		this.supplier = supplier;
 	}
 }

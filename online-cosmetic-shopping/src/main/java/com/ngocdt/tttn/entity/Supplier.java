@@ -8,65 +8,76 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name="Supplier")
+@Table(name = "Supplier")
 @Getter
 @Setter
 public class Supplier {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column
-	private int supplierID;
-	
-	@Column
-	private String name;
-	
-	@Column
-	private String address;
-	
-	@Column
-	private String phoneNumber;
-	
-	@OneToMany(fetch=FetchType.LAZY,mappedBy="supplier")
-	private List<OrderForSupplier> orderForSuppliers;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column
+    private int supplierID;
 
-	public int getSupplierID() {
-		return supplierID;
-	}
+    @Column
+    private String companyName;
 
-	public void setSupplierID(int supplierID) {
-		this.supplierID = supplierID;
-	}
+    @Column
+    private String contactName;
 
-	public String getName() {
-		return name;
-	}
+    @Column
+    private String address;
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    @Column
+    private String phoneNumber;
 
-	public String getAddress() {
-		return address;
-	}
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "supplier")
+    private List<OrderForSupplier> orderForSuppliers;
 
-	public void setAddress(String address) {
-		this.address = address;
-	}
+    public int getSupplierID() {
+        return supplierID;
+    }
 
-	public String getPhoneNumber() {
-		return phoneNumber;
-	}
+    public void setSupplierID(int supplierID) {
+        this.supplierID = supplierID;
+    }
 
-	public void setPhoneNumber(String phoneNumber) {
-		this.phoneNumber = phoneNumber;
-	}
+    public String getAddress() {
+        return address;
+    }
 
-	public List<OrderForSupplier> getOrderForSuppliers() {
-		return orderForSuppliers;
-	}
+    public void setAddress(String address) {
+        this.address = address;
+    }
 
-	public void setOrderForSuppliers(List<OrderForSupplier> orderForSuppliers) {
-		this.orderForSuppliers = orderForSuppliers;
-	}
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public List<OrderForSupplier> getOrderForSuppliers() {
+        return orderForSuppliers;
+    }
+
+    public void setOrderForSuppliers(List<OrderForSupplier> orderForSuppliers) {
+        this.orderForSuppliers = orderForSuppliers;
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
+
+    public String getContactName() {
+        return contactName;
+    }
+
+    public void setContactName(String contactName) {
+        this.contactName = contactName;
+    }
 }

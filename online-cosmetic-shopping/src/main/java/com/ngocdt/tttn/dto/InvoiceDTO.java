@@ -12,7 +12,7 @@ import java.util.Date;
 @Setter
 public class InvoiceDTO {
     private int invoiceID;
-    private String taxCode;
+    private int taxCode;
     private Date date;
     private int orderID;
     private int employeeID;
@@ -58,11 +58,11 @@ public class InvoiceDTO {
         this.invoiceID = invoiceID;
     }
 
-    public String getTaxCode() {
+    public int getTaxCode() {
         return taxCode;
     }
 
-    public void setTaxCode(String taxCode) {
+    public void setTaxCode(int taxCode) {
         this.taxCode = taxCode;
     }
 

@@ -19,4 +19,20 @@ public class ReceiptionDetailKey implements Serializable {
     private int productID;
     @Column(name = "receiptionID", nullable = false)
     private int receiptionID;
+
+    public int getProductID() {
+        return productID;
+    }
+
+    public void setProductID(int productID) {
+        this.productID = productID;
+    }
+
+    public int getReceiptionID() {
+        return receiptionID;
+    }
+
+    public void setReceiptionID(int receiptionID) {
+        this.receiptionID = receiptionID;
+    }
 }

@@ -7,11 +7,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.NotBlank;
 
-import javax.persistence.Column;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-
 @Getter
 @Setter
 public class AddressDTO {
@@ -19,9 +14,9 @@ public class AddressDTO {
     @NotBlank(message = "Can be not empty.")
     private String phoneNumber;
     @NotBlank(message = "Can be not empty.")
-    private String receiverName;
+    private String name;
     @NotBlank(message = "Can be not empty.")
-    private String receiverAddress;
+    private String address;
     private int customerID;
 
     public static AddressDTO toDTO(Address address){
@@ -30,8 +25,8 @@ public class AddressDTO {
         AddressDTO dto = new AddressDTO();
         dto.setAddressID(address.getAddressID());
         dto.setPhoneNumber(address.getPhoneNumber());
-        dto.setReceiverName(address.getReceiverName());
-        dto.setReceiverAddress(address.getAddress());
+        dto.setName(address.getName());
+        dto.setAddress(address.getAddress());
         if(address.getCustomer() == null)
             return dto;
         dto.setCustomerID(address.getCustomer().getCustomerID());
@@ -43,8 +38,8 @@ public class AddressDTO {
         Address address = new Address();
         address.setAddressID(dto.getAddressID());
         address.setPhoneNumber(dto.getPhoneNumber());
-        address.setReceiverName(dto.getReceiverName());
-        address.setAddress(dto.getReceiverAddress());
+        address.setName(dto.getName());
+        address.setAddress(dto.getAddress());
         if(dto.getCustomerID() == 0)
             return address;
         Customer customer = new Customer();
@@ -70,20 +65,20 @@ public class AddressDTO {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getReceiverName() {
-        return receiverName;
+    public String getName() {
+        return name;
     }
 
-    public void setReceiverName(String receiverName) {
-        this.receiverName = receiverName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getReceiverAddress() {
-        return receiverAddress;
+    public String getAddress() {
+        return address;
     }
 
-    public void setReceiverAddress(String receiverAddress) {
-        this.receiverAddress = receiverAddress;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public int getCustomerID() {

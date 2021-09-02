@@ -49,7 +49,6 @@ public class DiscountServiceImpl implements DiscountService {
         Discount discount = DiscountDTO.toEntity(dto);
         discount.setDiscountID(0);
         Account currentAccount = accountRepo.findByEmail(request.getAttribute("email").toString()).get();
-        discount.setEmployee(currentAccount.getEmployee());
         discount = discountRepo.save(discount);
         List<DiscountDetailDTO> discounts = new ArrayList<>();
         for (DiscountDetailDTO detail : dto.getDiscountDetails()

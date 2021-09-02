@@ -1,5 +1,6 @@
 package com.ngocdt.tttn.entity;
 
+import com.ngocdt.tttn.enums.OrderState;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,8 +22,12 @@ public class OrderForSupplier {
     @Column
     private Date date = new Date();
 
+    @Enumerated(EnumType.STRING)
     @Column
-    private long totalPayment;
+    private OrderState state = OrderState.UNCONFIRMED;
+
+    @Column
+    private long totalPrice;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "employeeID", nullable = false)
@@ -51,12 +56,20 @@ public class OrderForSupplier {
         this.date = date;
     }
 
-    public long getTotalPayment() {
-        return totalPayment;
+    public OrderState getState() {
+        return state;
     }
 
-    public void setTotalPayment(long totalPayment) {
-        this.totalPayment = totalPayment;
+    public void setState(OrderState state) {
+        this.state = state;
+    }
+
+    public long getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(long totalPrice) {
+        this.totalPrice = totalPrice;
     }
 
     public Employee getEmployee() {

@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,6 +31,8 @@ public class OrderServiceImpl implements OrderService {
     private final ProductPriceRepository productPriceRepo;
     private final DiscountDetailRepository discountDetailRepo;
     private final EmployeeRepository employeeRepo;
+    private final AddressRepository addressRepo;
+    private final InvoiceRepository invoiceRepo;
 
     @Override
     public List<OrderDTO> showAll() {
@@ -53,11 +56,10 @@ public class OrderServiceImpl implements OrderService {
         }
         order.setTotalDiscount(0);
         order.setTotalPrice(0);
-        order.setReceiverAddress(dto.getAddress().getReceiverAddress());
-        order.setReceiverName(dto.getAddress().getReceiverName());
-        order.setPhoneNumber(dto.getAddress().getPhoneNumber());
         order.setPaid(dto.getPaid());
         order.setTransportationFee(dto.getTransportationFee());
+        Address adress = addressRepo.findById(dto.getAddress().getAddressID()).orElseThrow(() -> new NotFoundException("Address not found."));
+        order.setAddress(adress);
         if (dto.getPaid() != 0)
             order.setState(OrderState.PAID);
         order = orderRepo.save(order);
@@ -117,11 +119,13 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void confirm(Integer id) {
+    public void confirm(Integer id, Integer employeeID) {
         Order order = orderRepo.findById(id).orElseThrow(() -> new NotFoundException("Order not found"));
+        Employee employee = employeeRepo.findById(employeeID).orElseThrow(()-> new NotFoundException("Employee not found."));
         if (order.getState() != OrderState.UNCONFIRMED && order.getState() != OrderState.PAID)
             throw new BadRequestException("Can not change state");
         order.setState(OrderState.CONFIRMED);
+        order.setEmployee(employee);
         orderRepo.save(order);
     }
 
@@ -141,6 +145,11 @@ public class OrderServiceImpl implements OrderService {
             throw new BadRequestException("Can not change state");
         order.setState(OrderState.DELIVERED);
         order.setPaid(order.getTotalPrice() - order.getTotalDiscount() + order.getTransportationFee());
+        Invoice invoice = new Invoice();
+        invoice.setEmployee(order.getShipper());
+        invoice.setDate(new Date());
+        invoice.setOrder(order);
+        invoiceRepo.save(invoice);
         orderRepo.save(order);
     }
 
@@ -212,6 +221,13 @@ public class OrderServiceImpl implements OrderService {
             throw new BadRequestException("Customer is not exists.");
         List<OrderDTO> result = orderRepo.findAllByCustomer_CustomerIDAndAndState(account.getCustomer().getCustomerID(), state)
                 .stream().map(OrderDTO::toDTO).collect(Collectors.toList());
+        Collections.reverse(result);
+        return result;
+    }
+
+    @Override
+    public List<OrderDTO> showAllByShipper(Integer id) {
+        List<OrderDTO> result = orderRepo.findAllByShipper_EmployeeID(id).stream().map(OrderDTO::toDTO).collect(Collectors.toList());
         Collections.reverse(result);
         return result;
     }

@@ -35,4 +35,36 @@ public class ReceiptionDetailDTO {
         receiptionDetail.setPrice(dto.getPrice());
         return receiptionDetail;
     }
+
+    public int getProductID() {
+        return productID;
+    }
+
+    public void setProductID(int productID) {
+        this.productID = productID;
+    }
+
+    public int getReceiptionID() {
+        return receiptionID;
+    }
+
+    public void setReceiptionID(int receiptionID) {
+        this.receiptionID = receiptionID;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public float getPrice() {
+        return price;
+    }
+
+    public void setPrice(float price) {
+        this.price = price;
+    }
 }

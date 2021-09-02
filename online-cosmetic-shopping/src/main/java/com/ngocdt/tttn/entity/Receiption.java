@@ -28,7 +28,7 @@ public class Receiption {
 	private Date date=new Date();
 
 	@Column
-	private long totalPayment;
+	private long totalPrice;
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "employeeID", nullable = false)
@@ -36,4 +36,52 @@ public class Receiption {
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "receiption")
 	private List<ReceiptionDetail> receiptionDetails;
+
+	public int getReceiptionID() {
+		return receiptionID;
+	}
+
+	public void setReceiptionID(int receiptionID) {
+		this.receiptionID = receiptionID;
+	}
+
+	public OrderForSupplier getOrderForSupplier() {
+		return orderForSupplier;
+	}
+
+	public void setOrderForSupplier(OrderForSupplier orderForSupplier) {
+		this.orderForSupplier = orderForSupplier;
+	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
+	}
+
+	public long getTotalPrice() {
+		return totalPrice;
+	}
+
+	public void setTotalPrice(long totalPrice) {
+		this.totalPrice = totalPrice;
+	}
+
+	public Employee getEmployee() {
+		return employee;
+	}
+
+	public void setEmployee(Employee employee) {
+		this.employee = employee;
+	}
+
+	public List<ReceiptionDetail> getReceiptionDetails() {
+		return receiptionDetails;
+	}
+
+	public void setReceiptionDetails(List<ReceiptionDetail> receiptionDetails) {
+		this.receiptionDetails = receiptionDetails;
+	}
 }

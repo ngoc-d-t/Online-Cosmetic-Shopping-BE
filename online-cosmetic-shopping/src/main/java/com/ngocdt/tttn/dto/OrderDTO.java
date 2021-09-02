@@ -15,7 +15,7 @@ import java.util.List;
 @Setter
 public class OrderDTO {
     private int orderID;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd")
     private Date date;
     private float totalPrice;
     private float totalDiscount;
@@ -36,11 +36,7 @@ public class OrderDTO {
         dto.setDate(order.getDate());
         dto.setTotalPrice(order.getTotalPrice());
         dto.setTotalDiscount(order.getTotalDiscount());
-        AddressDTO add = new AddressDTO();
-        add.setReceiverAddress(order.getReceiverAddress());
-        add.setReceiverName(order.getReceiverName());
-        add.setPhoneNumber(order.getPhoneNumber());
-        dto.setAddress(add);
+        dto.setAddress(AddressDTO.toDTO(order.getAddress()));
         dto.setPaid(order.getPaid());
         dto.setState(order.getState());
         dto.setTransportationFee(order.getTransportationFee());

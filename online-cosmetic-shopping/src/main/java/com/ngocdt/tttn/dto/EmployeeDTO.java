@@ -1,5 +1,6 @@
 package com.ngocdt.tttn.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ngocdt.tttn.entity.Category;
 import com.ngocdt.tttn.entity.Employee;
 import com.ngocdt.tttn.entity.Product;
@@ -19,6 +20,7 @@ public class EmployeeDTO {
     private String address;
     private String phoneNumber;
     private int sex;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd")
     private Date birthday;
     public static EmployeeDTO toDTO(Employee empl){
         if(empl == null){
@@ -26,7 +28,7 @@ public class EmployeeDTO {
         }
         EmployeeDTO dto=new EmployeeDTO();
         dto.setEmployeeID(empl.getEmployeeID());
-        dto.setName(empl.getName());
+        dto.setName(empl.getFullname());
         dto.setAddress(empl.getAddress());
         dto.setPhoneNumber(empl.getPhoneNumber());
         dto.setSex(empl.getSex());
@@ -40,7 +42,7 @@ public class EmployeeDTO {
         }
         Employee empl=new Employee();
         empl.setEmployeeID(dto.getEmployeeID());
-        empl.setName(dto.getName());
+        empl.setFullname(dto.getName());
         empl.setAddress(dto.getAddress());
         empl.setPhoneNumber(dto.getPhoneNumber());
         empl.setSex(dto.getSex());

@@ -2,15 +2,10 @@ package com.ngocdt.tttn.service.impl;
 
 import com.ngocdt.tttn.dto.ProductDTO;
 import com.ngocdt.tttn.dto.ProductPriceDTO;
-import com.ngocdt.tttn.entity.Account;
-import com.ngocdt.tttn.entity.DiscountDetail;
-import com.ngocdt.tttn.entity.Product;
-import com.ngocdt.tttn.entity.ProductPrice;
+import com.ngocdt.tttn.entity.*;
 import com.ngocdt.tttn.exception.BadRequestException;
-import com.ngocdt.tttn.repository.AccountRepository;
-import com.ngocdt.tttn.repository.DiscountDetailRepository;
-import com.ngocdt.tttn.repository.ProductPriceRepository;
-import com.ngocdt.tttn.repository.ProductRepository;
+import com.ngocdt.tttn.exception.NotFoundException;
+import com.ngocdt.tttn.repository.*;
 import com.ngocdt.tttn.service.ProductService;
 import com.ngocdt.tttn.utils.DriveAPIUtils;
 import lombok.Data;
@@ -25,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -38,6 +34,7 @@ public class ProductServiceImpl implements ProductService {
     private final AccountRepository accountRepo;
     private final ProductPriceRepository productPriceRepo;
     private final DiscountDetailRepository discountDetailRepo;
+    private final SupplierRepository supplierRepo;
 
     @Value("${upload.path}")
     private String fileUpload;
@@ -56,12 +53,14 @@ public class ProductServiceImpl implements ProductService {
             dto.setPrice(productPrice.getPrice());
             return dto;
         }).collect(Collectors.toList());
+        //Collections.reverse(productDTOSs);
         return productDTOSs;
     }
 
     @Override
     public ProductDTO showOne(Integer id) {
-        ProductDTO dto = ProductDTO.toDTO(productRepo.findById(id).orElse(null));
+        ProductDTO dto = ProductDTO.toDTO(productRepo.findById(id)
+                .orElseThrow(() -> new NotFoundException("Product not found.")));
         DiscountDetail discountDetail = discountDetailRepo
                 .findByProduct(
                         dto.getProductID()).orElse(null);
@@ -80,15 +79,16 @@ public class ProductServiceImpl implements ProductService {
     public ProductDTO update(ProductDTO dto, HttpServletRequest request) {
         if (!productRepo.existsById(dto.getProductID()))
             throw new BadRequestException("Bad request.");
-        Account account = accountRepo.findByEmail(request.getAttribute("email").toString()).get();
         Product pro = ProductDTO.toEntity(dto);
-        pro.setEmployee(account.getEmployee());
 
         Product p = productRepo.findById(dto.getProductID()).get();
         if (!dto.getImage().equals(p.getImage())) {
             pro.setImage(uploadImage(dto.getImage()));
         } else pro.setImage(dto.getImage());
-
+        Supplier supplier = supplierRepo.findById(dto.getSupplierID()).orElse(null);
+        if(supplier == null)
+            throw new BadRequestException("Not found supplier.");
+        pro.setSupplier(supplier);
         pro = productRepo.save(pro);
 
         ProductPrice price = productPriceRepo.findByProduct(dto.getProductID());
@@ -111,11 +111,15 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public ProductDTO create(ProductDTO dto, HttpServletRequest request) {
-        Account account = accountRepo.findByEmail(request.getAttribute("email").toString()).get();
         Product pro = ProductDTO.toEntity(dto);
-        pro.setEmployee(account.getEmployee());
         pro.setProductID(0);
+
         pro.setImage(uploadImage(dto.getImage()));
+
+        Supplier supplier = supplierRepo.findById(dto.getSupplierID()).orElse(null);
+        if(supplier == null)
+            throw new BadRequestException("Not found supplier.");
+        pro.setSupplier(supplier);
         pro = productRepo.save(pro);
 
         ProductPriceDTO price = new ProductPriceDTO();
