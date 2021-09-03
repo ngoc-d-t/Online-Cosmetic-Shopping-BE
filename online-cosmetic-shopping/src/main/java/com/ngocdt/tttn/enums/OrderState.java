@@ -7,5 +7,7 @@ public enum OrderState {
     DELIVERING,
     DELIVERED,
     CANCELED,
+    FAILURE,
     DEFAULT
+
 }

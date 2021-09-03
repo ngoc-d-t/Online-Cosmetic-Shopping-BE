@@ -12,31 +12,34 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Controller
-@RequestMapping("api/admin/employees")
+@RequestMapping("api/admin")
 public class EmployeeController {
     private final EmployeeService employeeService;
 
-    @GetMapping()
-    public ResponseEntity<List<EmployeeDTO>> showAll( Integer id) {
-            return ResponseEntity.ok().body(employeeService.showAll());
+    @GetMapping("/employees")
+    public ResponseEntity<List<EmployeeDTO>> showAllEmployees() {
+            return ResponseEntity.ok().body(employeeService.showAllRoleAdminEmployees());
     }
-
-    @GetMapping("/{id}")
+    @GetMapping("/shippers")
+    public ResponseEntity<List<EmployeeDTO>> showAllShippers() {
+        return ResponseEntity.ok().body(employeeService.showAllShippers());
+    }
+    @GetMapping("/employees/{id}")
     public ResponseEntity<EmployeeDTO> showOne(@PathVariable("id") Integer id) {
         return ResponseEntity.ok().body(employeeService.showOne(id));
     }
 
-    @PostMapping()
+    @PostMapping("/employees")
     public ResponseEntity<EmployeeDTO> create(@Valid @RequestBody EmployeeDTO dto) {
         return ResponseEntity.ok().body(employeeService.create(dto));
     }
 
-    @PutMapping()
+    @PutMapping("/employees")
     public ResponseEntity<EmployeeDTO> update(@Valid @RequestBody EmployeeDTO dto) {
         return ResponseEntity.ok().body(employeeService.update(dto));
     }
 
-    @DeleteMapping()
+    @DeleteMapping("/employees")
     public ResponseEntity<Void> delete(@RequestParam("id") Integer id) {
         employeeService.delete(id);
         return ResponseEntity.ok().build();

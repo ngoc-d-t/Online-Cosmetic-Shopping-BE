@@ -6,11 +6,8 @@ import com.ngocdt.tttn.exception.BadRequestException;
 import com.ngocdt.tttn.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
@@ -21,7 +18,7 @@ import java.util.List;
 public class ProductController {
     private final ProductService productService;
 
-    @GetMapping("/public/products")
+    @GetMapping("/public/products/latest")
     public ResponseEntity<List<ProductDTO>> showAll(
             @RequestParam(value = "categoryID", required = false, defaultValue = "0") Integer id,
             @RequestParam(value = "value", required = false, defaultValue = "") String value ) {
@@ -36,7 +33,14 @@ public class ProductController {
         else
             throw new BadRequestException("No comment.");
     }
-
+    @GetMapping("/public/products/bestselling")
+    public ResponseEntity<List<ProductDTO>> showAll() {
+        return ResponseEntity.ok().body(productService.showBestSellingProducts());
+    }
+    @GetMapping("/admin/products")
+    public ResponseEntity<List<ProductDTO>> showAllAdmin() {
+        return ResponseEntity.ok().body(productService.showAllAdmin());
+    }
     @GetMapping("/public/products/{id}")
     public ResponseEntity<ProductDTO> showOne(@PathVariable("id") Integer id) {
         return ResponseEntity.ok().body(productService.showOne(id));

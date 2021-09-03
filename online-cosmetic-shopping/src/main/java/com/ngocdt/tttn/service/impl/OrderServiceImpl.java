@@ -107,10 +107,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDetailDTO createDetail(OrderDetailDTO dto) {
-        if (!productRepo.existsById(dto.getProduct().getProductID())) {
-            throw new BadRequestException("Product not found.");
-        }
-        Product product = productRepo.findById(dto.getProduct().getProductID()).get();
+        Product product = productRepo.findById(dto.getProduct().getProductID())
+                .orElseThrow(() -> new NotFoundException("Product not found."));
         OrderDetail od = OrderDetailDTO.toEntity(dto);
         od.setOrderDetailID(0);
         od = orderDetailRepo.save(od);
@@ -121,11 +119,14 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void confirm(Integer id, Integer employeeID) {
         Order order = orderRepo.findById(id).orElseThrow(() -> new NotFoundException("Order not found"));
-        Employee employee = employeeRepo.findById(employeeID).orElseThrow(()-> new NotFoundException("Employee not found."));
+        Employee employee = employeeRepo.findById(employeeID).orElseThrow(() -> new NotFoundException("Employee not found."));
         if (order.getState() != OrderState.UNCONFIRMED && order.getState() != OrderState.PAID)
             throw new BadRequestException("Can not change state");
         order.setState(OrderState.CONFIRMED);
         order.setEmployee(employee);
+        Employee shipper = employeeRepo.findById(orderRepo.findShipper())
+                .orElseThrow(() -> new NotFoundException("No shipper available."));
+        order.setShipper(shipper);
         orderRepo.save(order);
     }
 
@@ -169,6 +170,21 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
+    @Override
+    public void failure(Integer id) {
+        Order order = orderRepo.findById(id).orElseThrow(() -> new NotFoundException("Order not found"));
+        if (order.getState() != OrderState.DELIVERING)
+            throw new BadRequestException("Can not change state");
+        order.setState(OrderState.FAILURE);
+        orderRepo.save(order);
+        List<OrderDetail> orderDetails = orderDetailRepo.findAllByOrder_OrderID(order.getOrderID());
+        for (OrderDetail od : orderDetails
+        ) {
+            Product p = productRepo.findById(od.getProduct().getProductID()).get();
+            p.setQuantity(p.getQuantity() + od.getQuantity());
+            productRepo.save(p);
+        }
+    }
     @Override
     public OrderDTO update(OrderDTO dto, Employee employee) {
         if (employee == null)
@@ -231,4 +247,5 @@ public class OrderServiceImpl implements OrderService {
         Collections.reverse(result);
         return result;
     }
+
 }

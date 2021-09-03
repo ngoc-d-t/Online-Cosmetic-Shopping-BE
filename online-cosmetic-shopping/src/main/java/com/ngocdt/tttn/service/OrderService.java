@@ -36,4 +36,6 @@ public interface OrderService {
     List<OrderDTO> showAllByUserAndState(OrderState state, int accountID);
 
     List<OrderDTO> showAllByShipper(Integer id);
+
+    void failure(Integer id);
 }

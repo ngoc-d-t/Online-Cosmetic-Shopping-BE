@@ -22,7 +22,14 @@ public class EmployeeServiceImpl implements EmployeeService {
     public List<EmployeeDTO> showAll() {
         return employeeRepo.findAll().stream().map(EmployeeDTO::toDTO).collect(Collectors.toList());
     }
-
+    @Override
+    public List<EmployeeDTO> showAllRoleAdminEmployees() {
+        return employeeRepo.findAllRoleAdminEmployee().stream().map(EmployeeDTO::toDTO).collect(Collectors.toList());
+    }
+    @Override
+    public List<EmployeeDTO> showAllShippers() {
+        return employeeRepo.findAllShipper().stream().map(EmployeeDTO::toDTO).collect(Collectors.toList());
+    }
     @Override
     public EmployeeDTO showOne(Integer id) {
         return EmployeeDTO.toDTO(employeeRepo.findById(id).orElse(null));

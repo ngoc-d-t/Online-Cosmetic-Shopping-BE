@@ -41,7 +41,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDTO> showAll() {
-        List<ProductDTO> productDTOSs = productRepo.findAll().stream().map(e -> {
+        List<ProductDTO> productDTOSs = productRepo.findAllByQuantityIsGreaterThan(0).stream().map(e -> {
             ProductDTO dto = ProductDTO.toDTO(e);
             DiscountDetail discountDetail = discountDetailRepo
                     .findByProduct(dto.getProductID()).orElse(null);
@@ -53,7 +53,7 @@ public class ProductServiceImpl implements ProductService {
             dto.setPrice(productPrice.getPrice());
             return dto;
         }).collect(Collectors.toList());
-        //Collections.reverse(productDTOSs);
+        Collections.reverse(productDTOSs);
         return productDTOSs;
     }
 
@@ -152,8 +152,43 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public List<ProductDTO> showBestSellingProducts() {
+        List<ProductDTO> productDTOSs = productRepo.findBestSelling().stream().map(e -> {
+            ProductDTO dto = ProductDTO.toDTO(e);
+            DiscountDetail discountDetail = discountDetailRepo
+                    .findByProduct(dto.getProductID()).orElse(null);
+            if (discountDetail != null) {
+                dto.setDiscountPercent(discountDetail.getDiscountPercent());
+            }
+            ProductPrice productPrice = productPriceRepo
+                    .findByProduct(e.getProductID());
+            dto.setPrice(productPrice.getPrice());
+            return dto;
+        }).collect(Collectors.toList());
+        return productDTOSs;
+    }
+
+    @Override
+    public List<ProductDTO> showAllAdmin() {
+        List<ProductDTO> productDTOSs = productRepo.findAll().stream().map(e -> {
+            ProductDTO dto = ProductDTO.toDTO(e);
+            DiscountDetail discountDetail = discountDetailRepo
+                    .findByProduct(dto.getProductID()).orElse(null);
+            if (discountDetail != null) {
+                dto.setDiscountPercent(discountDetail.getDiscountPercent());
+            }
+            ProductPrice productPrice = productPriceRepo
+                    .findByProduct(e.getProductID());
+            dto.setPrice(productPrice.getPrice());
+            return dto;
+        }).collect(Collectors.toList());
+        Collections.reverse(productDTOSs);
+        return productDTOSs;
+    }
+
+    @Override
     public List<ProductDTO> showByCategory(Integer categoryID) {
-        return productRepo.findByCategory_CategoryID(categoryID).stream().map(e -> {
+        return productRepo.findByCategory_CategoryIDAndQuantityGreaterThan(categoryID,0).stream().map(e -> {
             ProductDTO dto = ProductDTO.toDTO(e);
             DiscountDetail discountDetail = discountDetailRepo
                     .findByProduct(
@@ -171,7 +206,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDTO> showByCategoryAndName(Integer categoryID, String value) {
-        return productRepo.findByCategory_CategoryIDAndNameLike(categoryID, "%" + value + "%").stream()
+        return productRepo
+                .findByCategory_CategoryIDAndNameLikeAndQuantityGreaterThan(categoryID, "%" + value + "%",0).stream()
                 .map(e -> {
                     ProductDTO dto = ProductDTO.toDTO(e);
                     DiscountDetail discountDetail = discountDetailRepo
@@ -189,7 +225,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDTO> showByName(String value) {
-        return productRepo.findByNameLike("%" + value + "%").stream().map(e -> {
+        return productRepo.findByNameLikeAndQuantityGreaterThan("%" + value + "%",0).stream().map(e -> {
             ProductDTO dto = ProductDTO.toDTO(e);
             DiscountDetail discountDetail = discountDetailRepo
                     .findByProduct(

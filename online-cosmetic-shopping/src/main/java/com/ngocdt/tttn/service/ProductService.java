@@ -20,4 +20,7 @@ public interface ProductService {
 
     ProductPriceDTO createProductPrice(ProductPriceDTO dto);
 
+    List<ProductDTO> showBestSellingProducts();
+
+    List<ProductDTO> showAllAdmin();
 }

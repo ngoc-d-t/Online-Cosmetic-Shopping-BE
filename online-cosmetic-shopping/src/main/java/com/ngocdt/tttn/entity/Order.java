@@ -10,7 +10,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Controller;
 
-@Entity
+@Entity(name = "Orders")
 @Table(name = "Orders")
 @Getter
 @Setter

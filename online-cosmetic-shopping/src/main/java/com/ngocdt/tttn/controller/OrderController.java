@@ -67,7 +67,7 @@ public class OrderController {
         return ResponseEntity.ok().body(orderService.create(dto, request));
     }
 
-    @PatchMapping("/admin/orders/{id}/{state}")
+    @PatchMapping("/shipper/orders/{id}/{state}")
     public ResponseEntity<Void> changeState(@PathVariable("id") Integer id,
                                             @PathVariable("state") OrderState state) {
 
@@ -86,6 +86,9 @@ public class OrderController {
             return ResponseEntity.ok().build();
         } else if (state == OrderState.CANCELED) {
             orderService.canceled(id);
+            return ResponseEntity.ok().build();
+        }else if (state == OrderState.FAILURE) {
+            orderService.failure(id);
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.badRequest().build();

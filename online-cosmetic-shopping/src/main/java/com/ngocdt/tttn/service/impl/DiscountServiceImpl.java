@@ -4,6 +4,7 @@ import com.ngocdt.tttn.dto.DiscountDTO;
 import com.ngocdt.tttn.dto.DiscountDetailDTO;
 import com.ngocdt.tttn.entity.*;
 import com.ngocdt.tttn.exception.BadRequestException;
+import com.ngocdt.tttn.exception.NotFoundException;
 import com.ngocdt.tttn.repository.AccountRepository;
 import com.ngocdt.tttn.repository.DiscountDetailRepository;
 import com.ngocdt.tttn.repository.DiscountRepository;
@@ -36,10 +37,18 @@ public class DiscountServiceImpl implements DiscountService {
     }
 
     @Override
+    @Transactional
     public DiscountDTO update(DiscountDTO dto, HttpServletRequest request) {
         if (!discountRepo.existsById(dto.getDiscountID()))
             throw new BadRequestException("Bad request.");
-        Discount discount = DiscountDTO.toEntity(dto);
+        Discount discount = discountRepo.findById(dto.getDiscountID())
+                .orElseThrow(()-> new NotFoundException("Discount not found."));
+        discount.setName(dto.getName());
+        discount.setEndTime(dto.getEndTime());
+        discount.setStartTime(dto.getStartTime());
+        for (DiscountDetailDTO detail: dto.getDiscountDetails()) {
+            discountDetailRepo.save(DiscountDetailDTO.toEntity(detail));
+        }
         return DiscountDTO.toDTO(discountRepo.save(discount));
     }
 
@@ -82,7 +91,7 @@ public class DiscountServiceImpl implements DiscountService {
         key.setDiscountID(dto.getDiscountID());
         key.setProductID(dto.getProductID());
         if (!discountDetailRepo.existsById(key))
-            throw new BadRequestException("Bad request.");
+            throw new BadRequestException("Discount detail not found.");
         DiscountDetail dd = DiscountDetailDTO.toEntity(dto);
         return DiscountDetailDTO.toDTO(discountDetailRepo.save(dd));
     }
