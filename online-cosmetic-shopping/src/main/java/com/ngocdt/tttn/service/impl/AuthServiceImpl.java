@@ -56,28 +56,34 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public RegisterDTO register(RegisterDTO dto) {
-        Customer customer = RegisterDTO.toCustomerEntity(dto);
+        Customer customer = new Customer();
+        customer.setFullname(dto.getFullname());
+        customer.setBirthday(dto.getBirthday());
+        customer.setSex(dto.getSex());
         customer.setCustomerID(0);
-        Customer cus = customerRepo.save(customer);
+        customer = customerRepo.save(customer);
+
         List<Address> addresses = new ArrayList<>();
-        for (Address add : customer.getAddresses()
-        ) {
-            Customer c = new Customer();
-            c.setCustomerID(cus.getCustomerID());
-            add.setCustomer(c);
-            AddressDTO addressDTO = AddressDTO.toDTO(add);
-            addresses.add(AddressDTO.toEntity(addressService.create(addressDTO)));
-        }
-        cus.setAddresses(addresses);
-        Account account = RegisterDTO.toAccountEntity(dto);
-        account.setCustomer(cus);
+        Address address = new Address();
+        address.setAddressID(0);
+        address.setAddress(dto.getAddress());
+        address.setName(dto.getFullname());
+        address.setPhoneNumber(dto.getPhoneNumber());
+        address.setCustomer(customer);
+        address = addressRepo.save(address);
+        addresses.add(address);
+        customer.setAddresses(addresses);
+
+        Account account = new Account();
+        account.setCustomer(customer);
         account.setAccountID(0);
+        account.setEmail(dto.getEmail());
         Role role = roleRepo.findByRoleName(ROLE.ROLE_USER).orElseThrow(
                 () -> new ConflictException("ROLE not found!"));
         account.setRole(role);
-        account.setPassword(encoder.encode(account.getPassword()));
+        account.setPassword(encoder.encode(dto.getPassword()));
         Account acc = accountRepo.save(account);
-        return RegisterDTO.toDTO(cus, acc);
+        return RegisterDTO.toDTO(customer, acc);
     }
 
     @Override

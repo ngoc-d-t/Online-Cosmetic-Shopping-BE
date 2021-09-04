@@ -15,7 +15,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Controller
-@RequestMapping("api/addresses")
+@RequestMapping("api/user/addresses")
 public class AddressController {
     private final AddressService addressService;
 
@@ -33,7 +33,9 @@ public class AddressController {
 
     @PostMapping()
     public ResponseEntity<AddressDTO> create(@Valid @RequestBody AddressDTO dto) {
-        return ResponseEntity.ok().body(addressService.create(dto));
+        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
+                .getPrincipal();
+        return ResponseEntity.ok().body(addressService.createUser(dto, userDetails.getCustomer()));
     }
 
     @PutMapping()

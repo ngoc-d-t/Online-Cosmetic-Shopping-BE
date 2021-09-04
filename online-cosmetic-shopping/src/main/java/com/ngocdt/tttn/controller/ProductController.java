@@ -1,6 +1,7 @@
 package com.ngocdt.tttn.controller;
 
 
+import com.ngocdt.tttn.dto.BestSellingProductDTO;
 import com.ngocdt.tttn.dto.ProductDTO;
 import com.ngocdt.tttn.exception.BadRequestException;
 import com.ngocdt.tttn.service.ProductService;
@@ -34,7 +35,7 @@ public class ProductController {
             throw new BadRequestException("No comment.");
     }
     @GetMapping("/public/products/bestselling")
-    public ResponseEntity<List<ProductDTO>> showAll() {
+    public ResponseEntity<List<BestSellingProductDTO>> showAll() {
         return ResponseEntity.ok().body(productService.showBestSellingProducts());
     }
     @GetMapping("/admin/products")

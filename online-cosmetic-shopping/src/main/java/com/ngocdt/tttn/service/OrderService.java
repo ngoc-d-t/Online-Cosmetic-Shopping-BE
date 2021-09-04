@@ -19,7 +19,7 @@ public interface OrderService {
 
     OrderDetailDTO createDetail(OrderDetailDTO dto);
 
-    void confirm(Integer id, Integer employeeID);
+    OrderDTO confirm(Integer id, Integer employeeID);
 
     void delivering(Integer id);
 

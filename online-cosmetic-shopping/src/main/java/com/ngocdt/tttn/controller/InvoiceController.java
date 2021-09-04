@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -26,7 +27,7 @@ public class InvoiceController {
         return ResponseEntity.ok().body(invoiceService.showOne(id));
     }
     @PostMapping()
-    public ResponseEntity<InvoiceDTO> create(@RequestBody InvoiceDTO dto, HttpServletRequest request){
+    public ResponseEntity<InvoiceDTO> create(@Valid  @RequestBody InvoiceDTO dto, HttpServletRequest request){
         return ResponseEntity.ok().body(invoiceService.create(dto, request));
     }
     @DeleteMapping()

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -41,7 +42,7 @@ public class OrderController {
         return ResponseEntity.ok().body(orderService.showOne(id));
     }
 
-    @GetMapping("/user/orders")
+    @GetMapping("/client/orders")
     public ResponseEntity<List<OrderDTO>> showByAllByUser(
             @RequestParam(value = "state", required = false, defaultValue = "") OrderState state) {
         UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
@@ -52,7 +53,7 @@ public class OrderController {
         return ResponseEntity.ok().body(orderService.showAllByUser(userDetails.getAccountID()));
     }
 
-    @PatchMapping("/user/orders/{id}")
+    @PatchMapping("/client/orders/{id}")
     public ResponseEntity<Void> requestChangeState(@PathVariable("id") Integer id) {
         UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
@@ -62,13 +63,13 @@ public class OrderController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/public/orders/create")
-    public ResponseEntity<OrderDTO> create(@RequestBody OrderDTO dto, HttpServletRequest request) {
+    @PostMapping("/client/orders/create")
+    public ResponseEntity<OrderDTO> create(@Valid @RequestBody OrderDTO dto, HttpServletRequest request) {
         return ResponseEntity.ok().body(orderService.create(dto, request));
     }
 
     @PatchMapping("/shipper/orders/{id}/{state}")
-    public ResponseEntity<Void> changeState(@PathVariable("id") Integer id,
+    public ResponseEntity<OrderDTO> changeState(@PathVariable("id") Integer id,
                                             @PathVariable("state") OrderState state) {
 
         if (state == OrderState.CONFIRMED) {
@@ -76,8 +77,8 @@ public class OrderController {
                     .getPrincipal();
             if (userDetails.getEmployee() == null)
                 throw new BadRequestException("Employee is not exist.");
-            orderService.confirm(id, userDetails.getEmployee().getEmployeeID());
-            return ResponseEntity.ok().build();
+           // orderService.confirm(id, userDetails.getEmployee().getEmployeeID());
+            return ResponseEntity.ok().body(orderService.confirm(id, userDetails.getEmployee().getEmployeeID()));
         } else if (state == OrderState.DELIVERING) {
             orderService.delivering(id);
             return ResponseEntity.ok().build();
@@ -101,7 +102,7 @@ public class OrderController {
     }
 
     @PutMapping("/admin/orders")
-    public ResponseEntity<OrderDTO> update(@RequestBody OrderDTO dto) {
+    public ResponseEntity<OrderDTO> update(@Valid @RequestBody OrderDTO dto) {
         UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
         return ResponseEntity.ok().body(orderService.update(dto, userDetails.getEmployee()));

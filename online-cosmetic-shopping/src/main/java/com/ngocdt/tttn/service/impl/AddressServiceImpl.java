@@ -42,8 +42,15 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public AddressDTO create(AddressDTO dto) {
+        return null;
+    }
+
+    @Override
+    public AddressDTO createUser(AddressDTO dto,Customer customer) {
         if(!customerRepo.existsById(dto.getCustomerID()))
             throw new BadRequestException("Customer not found.");
+        if(dto.getCustomerID()!= customer.getCustomerID())
+            throw new BadRequestException("Can not change.");
         Address address = AddressDTO.toEntity(dto);
         address.setAddressID(0);
         return AddressDTO.toDTO(addressRepo.save(address));

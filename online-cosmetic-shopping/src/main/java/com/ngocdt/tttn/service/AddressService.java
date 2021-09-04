@@ -9,4 +9,6 @@ public interface AddressService extends GenericService<AddressDTO, Integer> {
     List<AddressDTO> showByCustomer(Integer id);
 
     List<AddressDTO> show(Customer customer);
+
+    AddressDTO createUser(AddressDTO dto, Customer customer);
 }

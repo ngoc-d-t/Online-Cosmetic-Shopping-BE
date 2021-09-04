@@ -25,33 +25,6 @@ public class RegisterDTO {
     private String phoneNumber;
     private String address;
 
-    public static Account toAccountEntity(RegisterDTO dto){
-        if(dto == null)
-            return null;
-        Account account = new Account();
-        account.setEmail(dto.getEmail());
-        account.setPassword(dto.getPassword());
-        return account;
-    }
-    public static Customer toCustomerEntity(RegisterDTO dto){
-        if(dto == null)
-            return null;
-        Customer customer = new Customer();
-        customer.setFullname(dto.getFullname());
-        customer.setBirthday(dto.getBirthday());
-        customer.setSex(dto.getSex());
-
-        List<Address> addresses = new ArrayList<>();
-        Address address = new Address();
-        address.setPhoneNumber(dto.getPhoneNumber());
-        address.setName(dto.getFullname());
-        address.setAddress(dto.getAddress());
-
-        addresses.add(address);
-        customer.setAddresses(addresses);
-        return customer;
-    }
-
     public  static RegisterDTO toDTO(Customer customer, Account account){
         if(customer == null || account == null)
             return null;
@@ -61,9 +34,11 @@ public class RegisterDTO {
         registerDTO.setBirthday(customer.getBirthday());
         registerDTO.setSex(customer.getSex());
         registerDTO.setFullname(customer.getFullname());
-
-        registerDTO.setPhoneNumber(customer.getAddresses().stream().findFirst().orElse(null).getPhoneNumber());
-        registerDTO.setAddress(customer.getAddresses().stream().findFirst().orElse(null).getAddress());
+        Address address = customer.getAddresses().stream().findFirst().orElse(null);
+        if(address != null) {
+            registerDTO.setPhoneNumber(address.getPhoneNumber());
+            registerDTO.setAddress(address.getAddress());
+        }
         return registerDTO;
     }
     public String getFullname() {

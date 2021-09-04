@@ -1,8 +1,12 @@
 package com.ngocdt.tttn.service.impl;
 
+import com.ngocdt.tttn.dto.BestSellingProductDTO;
 import com.ngocdt.tttn.dto.ProductDTO;
 import com.ngocdt.tttn.dto.ProductPriceDTO;
-import com.ngocdt.tttn.entity.*;
+import com.ngocdt.tttn.entity.DiscountDetail;
+import com.ngocdt.tttn.entity.Product;
+import com.ngocdt.tttn.entity.ProductPrice;
+import com.ngocdt.tttn.entity.Supplier;
 import com.ngocdt.tttn.exception.BadRequestException;
 import com.ngocdt.tttn.exception.NotFoundException;
 import com.ngocdt.tttn.repository.*;
@@ -35,7 +39,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductPriceRepository productPriceRepo;
     private final DiscountDetailRepository discountDetailRepo;
     private final SupplierRepository supplierRepo;
-
+    private final BestSellingProductRepository bestSellingProductRepo;
     @Value("${upload.path}")
     private String fileUpload;
 
@@ -86,7 +90,7 @@ public class ProductServiceImpl implements ProductService {
             pro.setImage(uploadImage(dto.getImage()));
         } else pro.setImage(dto.getImage());
         Supplier supplier = supplierRepo.findById(dto.getSupplierID()).orElse(null);
-        if(supplier == null)
+        if (supplier == null)
             throw new BadRequestException("Not found supplier.");
         pro.setSupplier(supplier);
         pro = productRepo.save(pro);
@@ -117,7 +121,7 @@ public class ProductServiceImpl implements ProductService {
         pro.setImage(uploadImage(dto.getImage()));
 
         Supplier supplier = supplierRepo.findById(dto.getSupplierID()).orElse(null);
-        if(supplier == null)
+        if (supplier == null)
             throw new BadRequestException("Not found supplier.");
         pro.setSupplier(supplier);
         pro = productRepo.save(pro);
@@ -152,9 +156,9 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductDTO> showBestSellingProducts() {
-        List<ProductDTO> productDTOSs = productRepo.findBestSelling().stream().map(e -> {
-            ProductDTO dto = ProductDTO.toDTO(e);
+    public List<BestSellingProductDTO> showBestSellingProducts() {
+        List<BestSellingProductDTO> productDTOSs = bestSellingProductRepo.findBestSelling().stream().map(e -> {
+            BestSellingProductDTO dto = BestSellingProductDTO.toDTO(e);
             DiscountDetail discountDetail = discountDetailRepo
                     .findByProduct(dto.getProductID()).orElse(null);
             if (discountDetail != null) {
@@ -188,7 +192,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDTO> showByCategory(Integer categoryID) {
-        return productRepo.findByCategory_CategoryIDAndQuantityGreaterThan(categoryID,0).stream().map(e -> {
+        return productRepo.findByCategory_CategoryIDAndQuantityGreaterThan(categoryID, 0).stream().map(e -> {
             ProductDTO dto = ProductDTO.toDTO(e);
             DiscountDetail discountDetail = discountDetailRepo
                     .findByProduct(
@@ -207,7 +211,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductDTO> showByCategoryAndName(Integer categoryID, String value) {
         return productRepo
-                .findByCategory_CategoryIDAndNameLikeAndQuantityGreaterThan(categoryID, "%" + value + "%",0).stream()
+                .findByCategory_CategoryIDAndNameLikeAndQuantityGreaterThan(categoryID, "%" + value + "%", 0).stream()
                 .map(e -> {
                     ProductDTO dto = ProductDTO.toDTO(e);
                     DiscountDetail discountDetail = discountDetailRepo
@@ -225,7 +229,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDTO> showByName(String value) {
-        return productRepo.findByNameLikeAndQuantityGreaterThan("%" + value + "%",0).stream().map(e -> {
+        return productRepo.findByNameLikeAndQuantityGreaterThan("%" + value + "%", 0).stream().map(e -> {
             ProductDTO dto = ProductDTO.toDTO(e);
             DiscountDetail discountDetail = discountDetailRepo
                     .findByProduct(

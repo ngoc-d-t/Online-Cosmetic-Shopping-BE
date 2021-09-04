@@ -1,5 +1,6 @@
 package com.ngocdt.tttn.service;
 
+import com.ngocdt.tttn.dto.BestSellingProductDTO;
 import com.ngocdt.tttn.dto.ProductDTO;
 import com.ngocdt.tttn.dto.ProductPriceDTO;
 import com.ngocdt.tttn.entity.Product;
@@ -20,7 +21,7 @@ public interface ProductService {
 
     ProductPriceDTO createProductPrice(ProductPriceDTO dto);
 
-    List<ProductDTO> showBestSellingProducts();
+    List<BestSellingProductDTO> showBestSellingProducts();
 
     List<ProductDTO> showAllAdmin();
 }

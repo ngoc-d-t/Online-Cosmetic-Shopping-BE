@@ -1,9 +1,6 @@
 package com.ngocdt.tttn.service.impl;
 
-import com.ngocdt.tttn.dto.EmployeeDTO;
-import com.ngocdt.tttn.dto.OrderDTO;
-import com.ngocdt.tttn.dto.OrderDetailDTO;
-import com.ngocdt.tttn.dto.ProductDTO;
+import com.ngocdt.tttn.dto.*;
 import com.ngocdt.tttn.entity.*;
 import com.ngocdt.tttn.enums.OrderState;
 import com.ngocdt.tttn.exception.BadRequestException;
@@ -58,8 +55,20 @@ public class OrderServiceImpl implements OrderService {
         order.setTotalPrice(0);
         order.setPaid(dto.getPaid());
         order.setTransportationFee(dto.getTransportationFee());
-        Address adress = addressRepo.findById(dto.getAddress().getAddressID()).orElseThrow(() -> new NotFoundException("Address not found."));
-        order.setAddress(adress);
+        Address address;
+        if (dto.getAddress().getAddressID() > 0) {
+            address = addressRepo.findById(dto.getAddress().getAddressID())
+                    .orElseThrow(() -> new NotFoundException("Address not found."));
+        } else {
+            Address ad = new Address();
+            ad.setAddressID(0);
+            ad.setPhoneNumber(dto.getAddress().getPhoneNumber());
+            ad.setName(dto.getAddress().getName());
+            ad.setAddress(dto.getAddress().getAddress());
+            ad.setCustomer(order.getCustomer());
+            address = addressRepo.save(ad);
+        }
+        order.setAddress(address);
         if (dto.getPaid() != 0)
             order.setState(OrderState.PAID);
         order = orderRepo.save(order);
@@ -117,7 +126,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void confirm(Integer id, Integer employeeID) {
+    public OrderDTO confirm(Integer id, Integer employeeID) {
         Order order = orderRepo.findById(id).orElseThrow(() -> new NotFoundException("Order not found"));
         Employee employee = employeeRepo.findById(employeeID).orElseThrow(() -> new NotFoundException("Employee not found."));
         if (order.getState() != OrderState.UNCONFIRMED && order.getState() != OrderState.PAID)
@@ -127,7 +136,7 @@ public class OrderServiceImpl implements OrderService {
         Employee shipper = employeeRepo.findById(orderRepo.findShipper())
                 .orElseThrow(() -> new NotFoundException("No shipper available."));
         order.setShipper(shipper);
-        orderRepo.save(order);
+        return OrderDTO.toDTO(orderRepo.save(order));
     }
 
     @Override
@@ -185,6 +194,7 @@ public class OrderServiceImpl implements OrderService {
             productRepo.save(p);
         }
     }
+
     @Override
     public OrderDTO update(OrderDTO dto, Employee employee) {
         if (employee == null)
