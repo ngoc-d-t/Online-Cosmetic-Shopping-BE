@@ -38,6 +38,10 @@ public class ProductController {
     public ResponseEntity<List<BestSellingProductDTO>> showAll() {
         return ResponseEntity.ok().body(productService.showBestSellingProducts());
     }
+    @GetMapping("/public/products/discount")
+    public ResponseEntity<List<ProductDTO>> showAllDiscount() {
+        return ResponseEntity.ok().body(productService.showDiscountProduct());
+    }
     @GetMapping("/admin/products")
     public ResponseEntity<List<ProductDTO>> showAllAdmin() {
         return ResponseEntity.ok().body(productService.showAllAdmin());

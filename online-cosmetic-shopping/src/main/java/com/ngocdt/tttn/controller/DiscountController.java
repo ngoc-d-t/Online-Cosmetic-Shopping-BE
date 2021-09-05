@@ -29,13 +29,13 @@ public class DiscountController {
     }
 
     @PutMapping()
-    public ResponseEntity<DiscountDTO> update(@Valid @RequestBody DiscountDTO dto, HttpServletRequest request) {
-        return ResponseEntity.ok().body(discountService.update(dto, request));
+    public ResponseEntity<DiscountDTO> update(@Valid @RequestBody DiscountDTO dto) {
+        return ResponseEntity.ok().body(discountService.update(dto));
     }
 
     @PostMapping()
-    public ResponseEntity<DiscountDTO> create(@Valid @RequestBody DiscountDTO dto, HttpServletRequest request) {
-        return ResponseEntity.ok().body(discountService.create(dto, request));
+    public ResponseEntity<DiscountDTO> create(@Valid @RequestBody DiscountDTO dto) {
+        return ResponseEntity.ok().body(discountService.create(dto));
     }
 
     @DeleteMapping()

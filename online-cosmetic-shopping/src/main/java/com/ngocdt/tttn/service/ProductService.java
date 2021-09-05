@@ -24,4 +24,6 @@ public interface ProductService {
     List<BestSellingProductDTO> showBestSellingProducts();
 
     List<ProductDTO> showAllAdmin();
+
+    List<ProductDTO> showDiscountProduct();
 }

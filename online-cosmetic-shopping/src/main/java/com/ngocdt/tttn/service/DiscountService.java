@@ -11,9 +11,9 @@ public interface DiscountService {
 
     DiscountDTO showOne(Integer id);
 
-    DiscountDTO create(DiscountDTO dto, HttpServletRequest request);
+    DiscountDTO create(DiscountDTO dto);
 
-    DiscountDTO update(DiscountDTO dto, HttpServletRequest request);
+    DiscountDTO update(DiscountDTO dto);
 
     void delete(Integer id);
 

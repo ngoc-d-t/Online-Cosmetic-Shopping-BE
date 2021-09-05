@@ -6,7 +6,6 @@ import com.ngocdt.tttn.entity.DiscountDetail;
 import com.ngocdt.tttn.entity.Employee;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,10 +32,12 @@ public class DiscountDTO {
         dto.setStartTime(discount.getStartTime());
         dto.setEndTime(discount.getEndTime());
         List<DiscountDetailDTO> discountDetails = new ArrayList<>();
-        for (DiscountDetail detail : discount.getDiscountDetails()
-        ) {
-            discountDetails.add(DiscountDetailDTO.toDTO(detail));
+        if (discount.getDiscountDetails().size() > 0) {
+            for (DiscountDetail detail : discount.getDiscountDetails()) {
+                discountDetails.add(DiscountDetailDTO.toDTO(detail));
+            }
         }
+
         dto.setDiscountDetails(discountDetails);
 
         return dto;

@@ -191,6 +191,23 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public List<ProductDTO> showDiscountProduct() {
+        List<ProductDTO> productDTOSs = productRepo.findAllByDiscount().stream().map(e -> {
+            ProductDTO dto = ProductDTO.toDTO(e);
+            DiscountDetail discountDetail = discountDetailRepo
+                    .findByProduct(dto.getProductID()).orElse(null);
+            if (discountDetail != null) {
+                dto.setDiscountPercent(discountDetail.getDiscountPercent());
+            }
+            ProductPrice productPrice = productPriceRepo
+                    .findByProduct(e.getProductID());
+            dto.setPrice(productPrice.getPrice());
+            return dto;
+        }).collect(Collectors.toList());
+        return productDTOSs;
+    }
+
+    @Override
     public List<ProductDTO> showByCategory(Integer categoryID) {
         return productRepo.findByCategory_CategoryIDAndQuantityGreaterThan(categoryID, 0).stream().map(e -> {
             ProductDTO dto = ProductDTO.toDTO(e);
