@@ -33,7 +33,7 @@ public class CustomerDTO {
         dto.setFullname(customer.getFullname());
         dto.setBirthday(customer.getBirthday());
         dto.setSex(customer.getSex());
-        if (customer.getAddresses().size() == 0)
+        if (customer.getAddresses() == null)
             return dto;
         List<AddressDTO> addressDTOS = new ArrayList<>();
         for (Address add : customer.getAddresses()

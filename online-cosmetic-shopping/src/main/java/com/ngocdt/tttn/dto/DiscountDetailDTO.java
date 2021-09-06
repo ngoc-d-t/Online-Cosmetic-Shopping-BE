@@ -15,6 +15,7 @@ public class DiscountDetailDTO {
     private int productID;
     private int discountID;
     private int discountPercent;
+    private ProductDTO product;
 
     public static DiscountDetailDTO toDTO(DiscountDetail dd){
         if(dd == null)
@@ -23,6 +24,7 @@ public class DiscountDetailDTO {
         dto.setProductID(dd.getProductID());
         dto.setDiscountID(dd.getDiscountID());
         dto.setDiscountPercent(dd.getDiscountPercent());
+        dto.setProduct(ProductDTO.toDTO(dd.getProduct()));
         return dto;
     }
     public static DiscountDetail toEntity(DiscountDetailDTO dto){
@@ -57,5 +59,13 @@ public class DiscountDetailDTO {
 
     public void setDiscountPercent(int discountPercent) {
         this.discountPercent = discountPercent;
+    }
+
+    public ProductDTO getProduct() {
+        return product;
+    }
+
+    public void setProduct(ProductDTO product) {
+        this.product = product;
     }
 }

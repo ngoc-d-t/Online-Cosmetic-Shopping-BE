@@ -2,7 +2,9 @@ package com.ngocdt.tttn.service.impl;
 
 import com.ngocdt.tttn.dto.DiscountDTO;
 import com.ngocdt.tttn.dto.DiscountDetailDTO;
-import com.ngocdt.tttn.entity.*;
+import com.ngocdt.tttn.entity.Discount;
+import com.ngocdt.tttn.entity.DiscountDetail;
+import com.ngocdt.tttn.entity.DiscountDetailKey;
 import com.ngocdt.tttn.exception.BadRequestException;
 import com.ngocdt.tttn.exception.NotFoundException;
 import com.ngocdt.tttn.repository.AccountRepository;
@@ -14,8 +16,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,7 +38,6 @@ public class DiscountServiceImpl implements DiscountService {
     }
 
     @Override
-    @Transactional
     public DiscountDTO update(DiscountDTO dto) {
         if (!discountRepo.existsById(dto.getDiscountID()))
             throw new BadRequestException("Bad request.");
@@ -47,15 +46,6 @@ public class DiscountServiceImpl implements DiscountService {
         discount.setName(dto.getName());
         discount.setEndTime(dto.getEndTime());
         discount.setStartTime(dto.getStartTime());
-        for (DiscountDetailDTO detail : dto.getDiscountDetails()) {
-            if (detail.getDiscountPercent() == 0) {
-                DiscountDetailKey key = new DiscountDetailKey();
-                key.setDiscountID(detail.getDiscountID());
-                key.setProductID(detail.getProductID());
-                if(discountDetailRepo.existsById(key))
-                    discountDetailRepo.deleteById(key);
-            } else discountDetailRepo.save(DiscountDetailDTO.toEntity(detail));
-        }
         return DiscountDTO.toDTO(discountRepo.save(discount));
     }
 
@@ -67,19 +57,8 @@ public class DiscountServiceImpl implements DiscountService {
         discount.setStartTime(dto.getStartTime());
         discount.setName(dto.getName());
         discount.setDiscountID(0);
-        discount = discountRepo.save(discount);
-        List<DiscountDetailDTO> discounts = new ArrayList<>();
-        for (DiscountDetailDTO detail : dto.getDiscountDetails()
-        ) {
-            detail.setDiscountID(discount.getDiscountID());
-            discounts.add(createDetail(detail));
-        }
-        dto.setDiscountID(discount.getDiscountID());
-        dto.setEndTime(discount.getEndTime());
-        dto.setStartTime(discount.getStartTime());
-        dto.setName(discount.getName());
-        dto.setDiscountDetails(discounts);
-        return dto;
+        ;
+        return DiscountDTO.toDTO(discountRepo.save(discount));
     }
 
     @Override
@@ -102,9 +81,14 @@ public class DiscountServiceImpl implements DiscountService {
         DiscountDetailKey key = new DiscountDetailKey();
         key.setDiscountID(dto.getDiscountID());
         key.setProductID(dto.getProductID());
-        if (!discountDetailRepo.existsById(key))
+        DiscountDetail dd = discountDetailRepo.findById(key).orElse(null);
+        if (dd == null)
             throw new BadRequestException("Discount detail not found.");
-        DiscountDetail dd = DiscountDetailDTO.toEntity(dto);
+        if (dto.getDiscountPercent() == 0){
+            discountDetailRepo.delete(dd);
+            return null;
+        }
+        dd.setDiscountPercent(dto.getDiscountPercent());
         return DiscountDetailDTO.toDTO(discountDetailRepo.save(dd));
     }
 }

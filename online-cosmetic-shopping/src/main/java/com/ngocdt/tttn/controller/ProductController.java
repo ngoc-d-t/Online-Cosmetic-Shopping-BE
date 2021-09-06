@@ -61,8 +61,8 @@ public class ProductController {
         return ResponseEntity.ok().body(productService.update(dto, request));
     }
 
-    @DeleteMapping("/admin/products")
-    public ResponseEntity<Void> delete(@RequestParam("id") Integer id) {
+    @DeleteMapping("/admin/products/{id}")
+    public ResponseEntity<Void> delete(@PathVariable("id") Integer id) {
         productService.delete(id);
         return ResponseEntity.ok().build();
     }

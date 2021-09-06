@@ -12,10 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,7 +30,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderDTO> showAll() {
-        List<OrderDTO> result = orderRepo.findAll().stream().map(OrderDTO::toDTO).collect(Collectors.toList());
+        List<OrderState> states = Arrays.asList(OrderState.CANCELED, OrderState.DELIVERED, OrderState.FAILURE);
+        List<OrderDTO> result = orderRepo.findByStateNotIn(states).stream().map(OrderDTO::toDTO).collect(Collectors.toList());
         Collections.reverse(result);
         return result;
     }
@@ -253,7 +251,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderDTO> showAllByShipper(Integer id) {
-        List<OrderDTO> result = orderRepo.findAllByShipper_EmployeeID(id).stream().map(OrderDTO::toDTO).collect(Collectors.toList());
+        List<OrderState> states = Arrays.asList(OrderState.CANCELED, OrderState.DELIVERED, OrderState.FAILURE);
+        List<OrderDTO> result = orderRepo.findAllByShipper_EmployeeIDAndStateNotIn(id,states).stream().map(OrderDTO::toDTO).collect(Collectors.toList());
         Collections.reverse(result);
         return result;
     }

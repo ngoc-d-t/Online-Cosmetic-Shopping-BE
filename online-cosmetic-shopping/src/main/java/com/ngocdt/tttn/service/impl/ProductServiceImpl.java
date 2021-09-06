@@ -138,6 +138,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public void delete(Integer id) {
         if (!productRepo.existsById(id))
             throw new BadRequestException("Bad request.");

@@ -32,14 +32,12 @@ public class DiscountDTO {
         dto.setStartTime(discount.getStartTime());
         dto.setEndTime(discount.getEndTime());
         List<DiscountDetailDTO> discountDetails = new ArrayList<>();
-        if (discount.getDiscountDetails().size() > 0) {
+        if (discount.getDiscountDetails() != null) {
             for (DiscountDetail detail : discount.getDiscountDetails()) {
                 discountDetails.add(DiscountDetailDTO.toDTO(detail));
             }
         }
-
         dto.setDiscountDetails(discountDetails);
-
         return dto;
     }
 
@@ -53,6 +51,8 @@ public class DiscountDTO {
         discount.setEndTime(dto.getEndTime());
         Employee employee = new Employee();
         List<DiscountDetail> discountDetails = new ArrayList<>();
+        if(dto.getDiscountDetails() == null)
+            return discount;
         for (DiscountDetailDTO detail : dto.getDiscountDetails()) {
             discountDetails.add(DiscountDetailDTO.toEntity(detail));
         }

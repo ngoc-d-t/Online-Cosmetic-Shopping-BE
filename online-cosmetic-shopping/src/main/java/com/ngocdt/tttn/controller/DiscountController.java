@@ -2,6 +2,8 @@ package com.ngocdt.tttn.controller;
 
 
 import com.ngocdt.tttn.dto.DiscountDTO;
+import com.ngocdt.tttn.dto.DiscountDetailDTO;
+import com.ngocdt.tttn.entity.DiscountDetail;
 import com.ngocdt.tttn.service.DiscountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +34,10 @@ public class DiscountController {
     public ResponseEntity<DiscountDTO> update(@Valid @RequestBody DiscountDTO dto) {
         return ResponseEntity.ok().body(discountService.update(dto));
     }
-
+    @PutMapping("/detail")
+    public ResponseEntity<DiscountDetailDTO> updateDetail(@Valid @RequestBody DiscountDetailDTO dto){
+        return ResponseEntity.ok().body(discountService.updateDetail(dto));
+    }
     @PostMapping()
     public ResponseEntity<DiscountDTO> create(@Valid @RequestBody DiscountDTO dto) {
         return ResponseEntity.ok().body(discountService.create(dto));

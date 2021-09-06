@@ -40,14 +40,16 @@ public class OrderDTO {
         dto.setPaid(order.getPaid());
         dto.setState(order.getState());
         dto.setTransportationFee(order.getTransportationFee());
-        List<OrderDetailDTO> detailDTOS = new ArrayList<>();
-        for (OrderDetail detail : order.getOrderDetails()
-        ) {
-            detailDTOS.add(OrderDetailDTO.toDTO(detail));
+        if(order.getOrderDetails() != null){
+            List<OrderDetailDTO> detailDTOS = new ArrayList<>();
+            for (OrderDetail detail : order.getOrderDetails()
+            ) {
+                detailDTOS.add(OrderDetailDTO.toDTO(detail));
+            }
+            dto.setOrderDetails(detailDTOS);
         }
         dto.setCustomerID(order.getCustomer().getCustomerID());
         dto.setShipper(EmployeeDTO.toDTO(order.getShipper()));
-        dto.setOrderDetails(detailDTOS);
         return dto;
     }
 

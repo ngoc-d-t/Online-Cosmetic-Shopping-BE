@@ -33,9 +33,9 @@ public class OrderForSupplierDTO {
 
         dto.setEmployeeID(od.getEmployee().getEmployeeID());
         dto.setSupplierID(od.getSupplier().getSupplierID());
-        List<OrderDetailForSupplierDTO> orderDetailsDTO = new ArrayList<>();
         if (od.getOrderDetailForSuppliers() == null)
             return dto;
+        List<OrderDetailForSupplierDTO> orderDetailsDTO = new ArrayList<>();
         for (OrderDetailForSupplier orderDetail :
                 od.getOrderDetailForSuppliers()) {
             orderDetailsDTO.add(OrderDetailForSupplierDTO.toDTO(orderDetail));
