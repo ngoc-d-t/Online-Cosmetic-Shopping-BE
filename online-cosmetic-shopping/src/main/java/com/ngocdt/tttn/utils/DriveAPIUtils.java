@@ -82,8 +82,6 @@ public final class DriveAPIUtils {
     }
 
     public static boolean isDriveImageUrl(String url){
-        if (!url.startsWith(URL_IMAGE))
-            return false;
-        return true;
+        return url.startsWith(URL_IMAGE);
     }
 }

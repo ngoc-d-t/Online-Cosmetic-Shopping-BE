@@ -26,13 +26,14 @@ public class ProductDTO {
     @NotBlank(message = "Can not be empty.")
     private String image;
     private int supplierID;
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
+    private SkinTypeDTO skinType;
+    private ToneDTO tone;
+    private SizeDTO size;
+    private CharacteristicDTO characteristic;
+    private IngredientDTO ingredient;
+    private BrandDTO brand;
+    private OriginDTO origin;
+    private CategoryDTO category;
 
     public static ProductDTO toDTO(Product pro) {
         if (pro == null) {
@@ -51,6 +52,14 @@ public class ProductDTO {
         if(pro.getSupplier() == null)
             return dto;
         dto.setSupplierID(pro.getSupplier().getSupplierID());
+        dto.setSkinType(SkinTypeDTO.toDTO(pro.getSkinType()));
+        dto.setTone(ToneDTO.toDTO(pro.getTone()));
+        dto.setSize(SizeDTO.toDTO(pro.getSize()));
+        dto.setBrand(BrandDTO.toDTO(pro.getBrand()));
+        dto.setOrigin(OriginDTO.toDTO(pro.getOrigin()));
+        dto.setIngredient(IngredientDTO.toDTO(pro.getIngredient()));
+        dto.setCharacteristic(CharacteristicDTO.toDTO(pro.getCharacteristic()));
+        dto.setCategory(CategoryDTO.toDTO(pro.getCategory()));
         return dto;
     }
 
@@ -70,6 +79,22 @@ public class ProductDTO {
         category.setCategoryID(dto.getCategoryID());
         pro.setCategory(category);
         return pro;
+    }
+
+    public SkinTypeDTO getSkinType() {
+        return skinType;
+    }
+
+    public void setSkinType(SkinTypeDTO skinType) {
+        this.skinType = skinType;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public int getSupplierID() {
@@ -166,5 +191,61 @@ public class ProductDTO {
 
     public void setDiscountPercent(float discountPercent) {
         this.discountPercent = discountPercent;
+    }
+
+    public ToneDTO getTone() {
+        return tone;
+    }
+
+    public void setTone(ToneDTO tone) {
+        this.tone = tone;
+    }
+
+    public CategoryDTO getCategory() {
+        return category;
+    }
+
+    public void setCategory(CategoryDTO category) {
+        this.category = category;
+    }
+
+    public SizeDTO getSize() {
+        return size;
+    }
+
+    public void setSize(SizeDTO size) {
+        this.size = size;
+    }
+
+    public CharacteristicDTO getCharacteristic() {
+        return characteristic;
+    }
+
+    public void setCharacteristic(CharacteristicDTO characteristic) {
+        this.characteristic = characteristic;
+    }
+
+    public IngredientDTO getIngredient() {
+        return ingredient;
+    }
+
+    public void setIngredient(IngredientDTO ingredient) {
+        this.ingredient = ingredient;
+    }
+
+    public BrandDTO getBrand() {
+        return brand;
+    }
+
+    public void setBrand(BrandDTO brand) {
+        this.brand = brand;
+    }
+
+    public OriginDTO getOrigin() {
+        return origin;
+    }
+
+    public void setOrigin(OriginDTO origin) {
+        this.origin = origin;
     }
 }

@@ -22,7 +22,7 @@ public class ProductController {
     @GetMapping("/public/products/latest")
     public ResponseEntity<List<ProductDTO>> showAll(
             @RequestParam(value = "categoryID", required = false, defaultValue = "0") Integer id,
-            @RequestParam(value = "value", required = false, defaultValue = "") String value ) {
+            @RequestParam(value = "value", required = false, defaultValue = "") String value) {
         if (id == 0 && !value.isEmpty())
             return ResponseEntity.ok().body(productService.showByName(value));
         else if (id == 0 && value.isEmpty())
@@ -34,18 +34,39 @@ public class ProductController {
         else
             throw new BadRequestException("No comment.");
     }
+
     @GetMapping("/public/products/bestselling")
     public ResponseEntity<List<BestSellingProductDTO>> showAll() {
         return ResponseEntity.ok().body(productService.showBestSellingProducts());
     }
+
     @GetMapping("/public/products/discount")
     public ResponseEntity<List<ProductDTO>> showAllDiscount() {
         return ResponseEntity.ok().body(productService.showDiscountProduct());
     }
+
     @GetMapping("/admin/products")
     public ResponseEntity<List<ProductDTO>> showAllAdmin() {
         return ResponseEntity.ok().body(productService.showAllAdmin());
     }
+
+    @GetMapping("/public/products/search")
+    public ResponseEntity<List<ProductDTO>> search(
+            @RequestParam(defaultValue = "") String q,
+            @RequestParam(defaultValue = "-1") Integer originID,
+            @RequestParam(defaultValue = "-1") Integer catID,
+            @RequestParam(defaultValue = "-1") Integer brandID,
+            @RequestParam(defaultValue = "-1") Integer skinID,
+            @RequestParam(defaultValue = "-1") Integer toneID,
+            @RequestParam(defaultValue = "-1") Integer ingrID,
+            @RequestParam(defaultValue = "-1") Integer chaID,
+            @RequestParam(defaultValue = "-1") Integer sizeID,
+            @RequestParam(defaultValue = "DESC") String sort
+    ) {
+        return ResponseEntity.ok().body(productService.search(q, originID, catID, brandID, skinID, toneID, ingrID,
+                chaID, sizeID, sort));
+    }
+
     @GetMapping("/public/products/{id}")
     public ResponseEntity<ProductDTO> showOne(@PathVariable("id") Integer id) {
         return ResponseEntity.ok().body(productService.showOne(id));

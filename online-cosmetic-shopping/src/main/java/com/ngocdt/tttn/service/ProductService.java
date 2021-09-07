@@ -11,12 +11,19 @@ import java.util.List;
 
 public interface ProductService {
     List<ProductDTO> showByCategory(Integer categoryID);
+
     List<ProductDTO> showByCategoryAndName(Integer categoryID, String value);
+
     List<ProductDTO> showByName(String value);
+
     List<ProductDTO> showAll();
+
     ProductDTO showOne(Integer id);
+
     ProductDTO update(ProductDTO dto, HttpServletRequest request);
+
     ProductDTO create(ProductDTO dto, HttpServletRequest request);
+
     void delete(Integer id);
 
     ProductPriceDTO createProductPrice(ProductPriceDTO dto);
@@ -26,4 +33,7 @@ public interface ProductService {
     List<ProductDTO> showAllAdmin();
 
     List<ProductDTO> showDiscountProduct();
+
+    List<ProductDTO> search(String q, Integer originID, Integer catID, Integer brandID, Integer skinID, Integer toneID,
+                            Integer ingrID, Integer chaID, Integer sizeID, String sort);
 }

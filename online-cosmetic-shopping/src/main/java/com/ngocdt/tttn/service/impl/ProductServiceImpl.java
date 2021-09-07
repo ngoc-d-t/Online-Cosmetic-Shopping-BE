@@ -11,10 +11,16 @@ import com.ngocdt.tttn.exception.BadRequestException;
 import com.ngocdt.tttn.exception.NotFoundException;
 import com.ngocdt.tttn.repository.*;
 import com.ngocdt.tttn.service.ProductService;
+import com.ngocdt.tttn.specification.ProductSpecification;
 import com.ngocdt.tttn.utils.DriveAPIUtils;
+import com.ngocdt.tttn.utils.VNCharacterUtils;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Base64Utils;
@@ -24,10 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -93,6 +96,9 @@ public class ProductServiceImpl implements ProductService {
         if (supplier == null)
             throw new BadRequestException("Not found supplier.");
         pro.setSupplier(supplier);
+        String otherName = VNCharacterUtils.removeAccent(dto.getName().toLowerCase())
+                .replace(" ", "");
+        pro.setOtherName(otherName);
         pro = productRepo.save(pro);
 
         ProductPrice price = productPriceRepo.findByProduct(dto.getProductID());
@@ -124,6 +130,9 @@ public class ProductServiceImpl implements ProductService {
         if (supplier == null)
             throw new BadRequestException("Not found supplier.");
         pro.setSupplier(supplier);
+        String otherName = VNCharacterUtils.removeAccent(dto.getName().toLowerCase())
+                .replace(" ", "");
+        pro.setOtherName(otherName);
         pro = productRepo.save(pro);
 
         ProductPriceDTO price = new ProductPriceDTO();
@@ -209,8 +218,30 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public List<ProductDTO> search(String q, Integer originID, Integer categoryID, Integer brandID, Integer skinID,
+                                   Integer toneID, Integer ingredientID, Integer characteristicID, Integer sizeID,
+                                   String sort) {
+        if (!sort.equalsIgnoreCase("DESC") && !sort.equalsIgnoreCase("ASC"))
+            throw new BadRequestException("sort invalid");
+        List<ProductDTO> results = productRepo.findAll(ProductSpecification.getFilter(q, originID, categoryID, brandID,
+                skinID, toneID, ingredientID, characteristicID, sizeID)).stream().map(e -> {
+            ProductDTO dto = ProductDTO.toDTO(e);
+            discountDetailRepo
+                    .findByProduct(dto.getProductID())
+                    .ifPresent(discountDetail -> dto.setDiscountPercent(discountDetail.getDiscountPercent()));
+            ProductPrice productPrice = productPriceRepo.findByProduct(e.getProductID());
+            dto.setPrice(productPrice.getPrice());
+            return dto;
+        }).collect(Collectors.toList());
+        if (sort.equalsIgnoreCase("DESC"))
+            return results.stream().sorted(Comparator.comparing(ProductDTO::getPrice).reversed())
+                    .collect(Collectors.toList());
+        return results.stream().sorted(Comparator.comparing(ProductDTO::getPrice)).collect(Collectors.toList());
+    }
+
+    @Override
     public List<ProductDTO> showByCategory(Integer categoryID) {
-        return productRepo.findByCategory_CategoryIDAndQuantityGreaterThan(categoryID, 0).stream().map(e -> {
+        return productRepo.findByCategory_CategoryID(categoryID).stream().map(e -> {
             ProductDTO dto = ProductDTO.toDTO(e);
             DiscountDetail discountDetail = discountDetailRepo
                     .findByProduct(
@@ -229,7 +260,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductDTO> showByCategoryAndName(Integer categoryID, String value) {
         return productRepo
-                .findByCategory_CategoryIDAndNameLikeAndQuantityGreaterThan(categoryID, "%" + value + "%", 0).stream()
+                .findByCategory_CategoryIDAndNameLike(categoryID, "%" + value + "%").stream()
                 .map(e -> {
                     ProductDTO dto = ProductDTO.toDTO(e);
                     DiscountDetail discountDetail = discountDetailRepo
@@ -247,7 +278,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDTO> showByName(String value) {
-        return productRepo.findByNameLikeAndQuantityGreaterThan("%" + value + "%", 0).stream().map(e -> {
+        return productRepo.findByNameLike("%" + value + "%").stream().map(e -> {
             ProductDTO dto = ProductDTO.toDTO(e);
             DiscountDetail discountDetail = discountDetailRepo
                     .findByProduct(
@@ -273,4 +304,17 @@ public class ProductServiceImpl implements ProductService {
             throw new BadRequestException("image-wrong");
         }
     }
+
+    private final String EQUAL = " = ";
+    private final String LIKE = " LIKE ";
+    private final String oriID = " originID" + EQUAL;
+    private final String braID = " brandID" + EQUAL;
+    private final String skiID = " skinTypeID" + EQUAL;
+    private final String tonID = " toneID" + EQUAL;
+    private final String ingID = " ingredientID" + EQUAL;
+    private final String chaID = " characteristicID" + EQUAL;
+    private final String sizID = " sizeID" + EQUAL;
+    private final String proName = " otherName" + LIKE;
+    private final String catID = " categoryID" + EQUAL;
+    private final String WHERE = " WHERE ";
 }
