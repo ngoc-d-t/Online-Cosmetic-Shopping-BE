@@ -43,6 +43,13 @@ public class ProductServiceImpl implements ProductService {
     private final DiscountDetailRepository discountDetailRepo;
     private final SupplierRepository supplierRepo;
     private final BestSellingProductRepository bestSellingProductRepo;
+    private final BrandRepository brandRepo;
+    private final OriginRepository originRepo;
+    private final CharacteristicRepository characteristicRepo;
+    private final SkinTypeRepository skinTypeRepo;
+    private final ToneRepository toneRepo;
+    private final IngredientRepository ingredientRepo;
+    private final SizeRepository sizeRepo;
     @Value("${upload.path}")
     private String fileUpload;
 
@@ -99,6 +106,20 @@ public class ProductServiceImpl implements ProductService {
         String otherName = VNCharacterUtils.removeAccent(dto.getName().toLowerCase())
                 .replace(" ", "");
         pro.setOtherName(otherName);
+        pro.setBrand(brandRepo.findById(dto.getBrand().getId())
+                .orElseThrow(()-> new NotFoundException("Brand not found.")));
+        pro.setOrigin(originRepo.findById(dto.getOrigin().getId())
+                .orElseThrow(()-> new NotFoundException("Origin not found.")));
+        pro.setIngredient(ingredientRepo.findById(dto.getIngredient().getId())
+                .orElseThrow(() -> new NotFoundException("Ingredient not found.")));
+        pro.setTone(toneRepo.findById(dto.getTone().getId())
+                .orElseThrow(()-> new NotFoundException("Tone not found.")));
+        pro.setSize(sizeRepo.findById(dto.getSize().getId())
+                .orElseThrow(()-> new NotFoundException("Size not found.")));
+        pro.setSkinType(skinTypeRepo.findById(dto.getSkinType().getId())
+                .orElseThrow(()-> new NotFoundException("Skin type not found.")));
+        pro.setCharacteristic(characteristicRepo.findById(dto.getCharacteristic().getId())
+                .orElseThrow(()-> new NotFoundException("Characteristic not found.")));
         pro = productRepo.save(pro);
 
         ProductPrice price = productPriceRepo.findByProduct(dto.getProductID());
@@ -123,7 +144,6 @@ public class ProductServiceImpl implements ProductService {
     public ProductDTO create(ProductDTO dto, HttpServletRequest request) {
         Product pro = ProductDTO.toEntity(dto);
         pro.setProductID(0);
-
         pro.setImage(uploadImage(dto.getImage()));
 
         Supplier supplier = supplierRepo.findById(dto.getSupplierID()).orElse(null);
@@ -133,6 +153,20 @@ public class ProductServiceImpl implements ProductService {
         String otherName = VNCharacterUtils.removeAccent(dto.getName().toLowerCase())
                 .replace(" ", "");
         pro.setOtherName(otherName);
+        pro.setBrand(brandRepo.findById(dto.getBrand().getId())
+                .orElseThrow(()-> new NotFoundException("Brand not found.")));
+        pro.setOrigin(originRepo.findById(dto.getOrigin().getId())
+                .orElseThrow(()-> new NotFoundException("Origin not found.")));
+        pro.setIngredient(ingredientRepo.findById(dto.getIngredient().getId())
+                .orElseThrow(() -> new NotFoundException("Ingredient not found.")));
+        pro.setTone(toneRepo.findById(dto.getTone().getId())
+                .orElseThrow(()-> new NotFoundException("Tone not found.")));
+        pro.setSize(sizeRepo.findById(dto.getSize().getId())
+                .orElseThrow(()-> new NotFoundException("Size not found.")));
+        pro.setSkinType(skinTypeRepo.findById(dto.getSkinType().getId())
+                .orElseThrow(()-> new NotFoundException("Skin type not found.")));
+        pro.setCharacteristic(characteristicRepo.findById(dto.getCharacteristic().getId())
+                .orElseThrow(()-> new NotFoundException("Characteristic not found.")));
         pro = productRepo.save(pro);
 
         ProductPriceDTO price = new ProductPriceDTO();
@@ -221,6 +255,7 @@ public class ProductServiceImpl implements ProductService {
     public List<ProductDTO> search(String q, Integer originID, Integer categoryID, Integer brandID, Integer skinID,
                                    Integer toneID, Integer ingredientID, Integer characteristicID, Integer sizeID,
                                    String sort) {
+        q = VNCharacterUtils.removeAccent(q).replace(" ", "").toLowerCase();
         if (!sort.equalsIgnoreCase("DESC") && !sort.equalsIgnoreCase("ASC"))
             throw new BadRequestException("sort invalid");
         List<ProductDTO> results = productRepo.findAll(ProductSpecification.getFilter(q, originID, categoryID, brandID,

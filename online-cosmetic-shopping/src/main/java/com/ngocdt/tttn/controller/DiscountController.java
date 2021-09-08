@@ -38,6 +38,10 @@ public class DiscountController {
     public ResponseEntity<DiscountDetailDTO> updateDetail(@Valid @RequestBody DiscountDetailDTO dto){
         return ResponseEntity.ok().body(discountService.updateDetail(dto));
     }
+    @PostMapping("/detail")
+    public ResponseEntity<DiscountDetailDTO> createDetail(@Valid @RequestBody DiscountDetailDTO dto){
+        return ResponseEntity.ok().body(discountService.createDetail(dto));
+    }
     @PostMapping()
     public ResponseEntity<DiscountDTO> create(@Valid @RequestBody DiscountDTO dto) {
         return ResponseEntity.ok().body(discountService.create(dto));

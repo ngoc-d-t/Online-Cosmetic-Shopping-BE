@@ -39,7 +39,33 @@ public class BestSellingProduct {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "categoryID", nullable = false)
     private Category category;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "ingredientID", nullable = false)
+    private Ingredient ingredient;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "brandID", nullable = false)
+    private Brand brand;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "characteristicID", nullable = false)
+    private Characteristic characteristic;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "sizeID", nullable = false)
+    private Size size;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "skinTypeID", nullable = false)
+    private SkinType skinType;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "originID", nullable = false)
+    private Origin origin;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "toneID", nullable = false)
+    private Tone tone;
 
     public int getProductID() {
         return productID;
@@ -127,5 +153,61 @@ public class BestSellingProduct {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public Ingredient getIngredient() {
+        return ingredient;
+    }
+
+    public void setIngredient(Ingredient ingredient) {
+        this.ingredient = ingredient;
+    }
+
+    public Brand getBrand() {
+        return brand;
+    }
+
+    public void setBrand(Brand brand) {
+        this.brand = brand;
+    }
+
+    public Characteristic getCharacteristic() {
+        return characteristic;
+    }
+
+    public void setCharacteristic(Characteristic characteristic) {
+        this.characteristic = characteristic;
+    }
+
+    public Size getSize() {
+        return size;
+    }
+
+    public void setSize(Size size) {
+        this.size = size;
+    }
+
+    public SkinType getSkinType() {
+        return skinType;
+    }
+
+    public void setSkinType(SkinType skinType) {
+        this.skinType = skinType;
+    }
+
+    public Origin getOrigin() {
+        return origin;
+    }
+
+    public void setOrigin(Origin origin) {
+        this.origin = origin;
+    }
+
+    public Tone getTone() {
+        return tone;
+    }
+
+    public void setTone(Tone tone) {
+        this.tone = tone;
     }
 }

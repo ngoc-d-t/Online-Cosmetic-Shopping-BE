@@ -2,9 +2,11 @@ package com.ngocdt.tttn.service.impl;
 
 import com.ngocdt.tttn.dto.DiscountDTO;
 import com.ngocdt.tttn.dto.DiscountDetailDTO;
+import com.ngocdt.tttn.dto.ProductDTO;
 import com.ngocdt.tttn.entity.Discount;
 import com.ngocdt.tttn.entity.DiscountDetail;
 import com.ngocdt.tttn.entity.DiscountDetailKey;
+import com.ngocdt.tttn.entity.Product;
 import com.ngocdt.tttn.exception.BadRequestException;
 import com.ngocdt.tttn.exception.NotFoundException;
 import com.ngocdt.tttn.repository.AccountRepository;
@@ -72,6 +74,16 @@ public class DiscountServiceImpl implements DiscountService {
     public DiscountDetailDTO createDetail(DiscountDetailDTO dto) {
         if (!productRepo.existsById(dto.getProductID()))
             throw new BadRequestException("Product not found.");
+        List<Product> products = productRepo.findAllByDiscount();
+        Discount d = discountRepo.findById(dto.getDiscountID()).orElseThrow(()-> new NotFoundException("Discount not found."));
+        for (Product p: products) {
+            if(p.getProductID() == dto.getProductID()){
+                DiscountDetail discountDetail = discountDetailRepo
+                        .findByProductIDAndTime(dto.getProductID(),d.getStartTime()).orElse(null);
+                if(discountDetail != null)
+                    throw new BadRequestException("Can not create discount at now.");
+            }
+        }
         DiscountDetail dd = DiscountDetailDTO.toEntity(dto);
         return DiscountDetailDTO.toDTO(discountDetailRepo.save(dd));
     }
