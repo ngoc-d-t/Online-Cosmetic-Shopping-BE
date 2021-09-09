@@ -17,7 +17,9 @@ import com.ngocdt.tttn.service.DiscountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import springfox.documentation.spring.web.readers.operation.ResponseMessagesReader;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,6 +47,23 @@ public class DiscountServiceImpl implements DiscountService {
             throw new BadRequestException("Bad request.");
         Discount discount = discountRepo.findById(dto.getDiscountID())
                 .orElseThrow(() -> new NotFoundException("Discount not found."));
+        if(dto.getStartTime().compareTo(dto.getEndTime()) >0)
+            throw new BadRequestException("End time must be greater than start time.");
+        List<Integer> ids = new ArrayList<>();
+        ids.add(dto.getDiscountID());
+        List<Discount> discounts = discountRepo.findAllByDiscountIDNotIn(ids);
+        for (Discount d : discounts) {
+            if ((dto.getStartTime().compareTo(d.getStartTime()) >=0 && dto.getStartTime().compareTo(d.getEndTime()) <=0) ||
+                    (dto.getStartTime().compareTo(d.getStartTime()) <=0 && dto.getEndTime().compareTo(d.getStartTime()) >=0)) {
+                for (DiscountDetail p : discount.getDiscountDetails()) {
+                    DiscountDetail discountDetail = discountDetailRepo
+                            .findByProductIDAndTime(p.getProductID(), dto.getStartTime()).orElse(null);
+                    if (discountDetail != null)
+                        throw new BadRequestException("Can not update discount at now.");
+                }
+
+            }
+        }
         discount.setName(dto.getName());
         discount.setEndTime(dto.getEndTime());
         discount.setStartTime(dto.getStartTime());
@@ -72,19 +91,23 @@ public class DiscountServiceImpl implements DiscountService {
 
     @Override
     public DiscountDetailDTO createDetail(DiscountDetailDTO dto) {
-        if (!productRepo.existsById(dto.getProductID()))
+        Product pp = productRepo.findById(dto.getProductID()).orElse(null);
+        if (pp == null)
             throw new BadRequestException("Product not found.");
+        if (dto.getDiscountPercent() <= 0)
+            throw new BadRequestException("Discount percent must be greater than 0.");
         List<Product> products = productRepo.findAllByDiscount();
-        Discount d = discountRepo.findById(dto.getDiscountID()).orElseThrow(()-> new NotFoundException("Discount not found."));
-        for (Product p: products) {
-            if(p.getProductID() == dto.getProductID()){
+        Discount d = discountRepo.findById(dto.getDiscountID()).orElseThrow(() -> new NotFoundException("Discount not found."));
+        for (Product p : products) {
+            if (p.getProductID() == dto.getProductID()) {
                 DiscountDetail discountDetail = discountDetailRepo
-                        .findByProductIDAndTime(dto.getProductID(),d.getStartTime()).orElse(null);
-                if(discountDetail != null)
+                        .findByProductIDAndTime(dto.getProductID(), d.getStartTime()).orElse(null);
+                if (discountDetail != null)
                     throw new BadRequestException("Can not create discount at now.");
             }
         }
         DiscountDetail dd = DiscountDetailDTO.toEntity(dto);
+        dd.setProduct(pp);
         return DiscountDetailDTO.toDTO(discountDetailRepo.save(dd));
     }
 
@@ -96,7 +119,7 @@ public class DiscountServiceImpl implements DiscountService {
         DiscountDetail dd = discountDetailRepo.findById(key).orElse(null);
         if (dd == null)
             throw new BadRequestException("Discount detail not found.");
-        if (dto.getDiscountPercent() == 0){
+        if (dto.getDiscountPercent() == 0) {
             discountDetailRepo.delete(dd);
             return null;
         }
